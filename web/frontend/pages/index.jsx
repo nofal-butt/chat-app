@@ -7,9 +7,11 @@ import {
   Stack,
   Link,
   Text,
+  Frame
 } from "@shopify/polaris";
 import { TitleBar } from "@shopify/app-bridge-react";
 import { useTranslation, Trans } from "react-i18next";
+import Navbar from "../components/navbar"
 
 import { trophyImage } from "../assets";
 
@@ -17,11 +19,26 @@ import { ProductsCard } from "../components";
 
 export default function HomePage() {
   const { t } = useTranslation();
+  const headstyle = {
+    display: "flex",
+    flexdirection: "row",
+    height: "100vh",/* Adjust the height as needed */
+  }
+  const pagestyle = {
+    flexgrow: 1,
+    backgroundcolor: "lightgray",
+    transition: "width 0.5s",/* Optional transition effect */
+
+  }
+
   return (
-    <Page narrowWidth>
-      <TitleBar title={t("HomePage.title")} primaryAction={null} />
+    <Page fullWidth>
+      {/* <TitleBar title={t("HomePage.title")} primaryAction={null} /> */}
+      <TitleBar>
+
+      </TitleBar>
       <Layout>
-        <Layout.Section>
+        {/* <Layout.Section>
           <Card sectioned>
             <Stack
               wrap={false}
@@ -83,11 +100,14 @@ export default function HomePage() {
               </Stack.Item>
             </Stack>
           </Card>
-        </Layout.Section>
-        <Layout.Section>
-          <ProductsCard />
-        </Layout.Section>
+        </Layout.Section> */}
+        <Frame>
+          <Navbar />
+
+        </Frame>
+
+
       </Layout>
-    </Page>
+    </Page >
   );
 }
