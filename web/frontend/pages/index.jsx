@@ -11,7 +11,7 @@ import {
 } from "@shopify/polaris";
 import { TitleBar } from "@shopify/app-bridge-react";
 import { useTranslation, Trans } from "react-i18next";
-import Navbar from "../components/navbar"
+import Navbar from "../components/Accounts/navbar.jsx"
 
 import { trophyImage } from "../assets";
 

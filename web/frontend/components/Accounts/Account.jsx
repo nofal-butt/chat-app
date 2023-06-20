@@ -9,7 +9,7 @@ import {
 import React, { useEffect } from 'react';
 import axios from 'axios';
 import { useState, useCallback } from 'react';
-import { useAuthenticatedFetch } from '../hooks/useAuthenticatedFetch';
+import { useAuthenticatedFetch } from '../../hooks/useAuthenticatedFetch';
 import { Thumbnail } from '@shopify/polaris';
 
 
@@ -81,9 +81,9 @@ function Account() {
                 "https://api.cloudinary.com/v1_1/dfy2gjqhv/image/upload",
                 formData
             );
-            const data = response.data;
-            console.log(data);
-            setData({ ...data, url: data.secure_url });
+            const res = response.data;
+            console.log(res);
+            setData({ ...data, url: res.secure_url });
         } catch (error) {
             console.log(error);
         }
@@ -100,13 +100,11 @@ function Account() {
                 "Accept-Encoding": "gzip,deflate,compress"
             },
             body: JSON.stringify(data)
-        }).then((req, res) => {
-            res.text().catch(err => {
-                console.log(err.message)
-            })
+        }).then(() => {
+            console.log("Successfull data sand")
 
         }).catch((err) => {
-            console.log("foam submittion error")
+            console.log(err, "error")
 
         });
 

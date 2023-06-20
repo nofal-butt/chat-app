@@ -7,12 +7,18 @@ import serveStatic from "serve-static";
 import shopify from "./shopify.js";
 import productCreator from "./product-creator.js";
 import GDPRWebhookHandlers from "./gdpr.js";
-import axios from "axios"
+import mongoose from "mongoose"
+import AccountModel from "./Database/AccountSchema.js";
 
 const PORT = parseInt(
   process.env.BACKEND_PORT || process.env.PORT || "3000",
   10
 );
+mongoose.connect("mongodb://0.0.0.0:/Account",).then(() => {
+  console.log("Connected to MongoDB");
+}).catch((err) => {
+  console.log(err)
+});
 
 const STATIC_PATH =
   process.env.NODE_ENV === "production"
@@ -42,9 +48,31 @@ app.use(express.json());
 //--------------------------------------starting pont------
 
 app.post("/api/Account", async (req, res) => {
-  console.log(req.body)
-})
+  // console.log(req.body)
+  const data = req.body
+  const session = res.locals.shopify.session
+  const shop = session.shop
+  data["shop"] = shop
+  const user = new AccountModel(data);
+  try {
+    await user.save()
+    res.send("haloo i am fine")
+  } catch (err) {
+    console.log(err)
+  }
 
+})
+app.get("/api/Account", async (req, res) => {
+  const data = await AccountModel.find()
+  console.log(data)
+  try {
+    res.json(data)
+
+  } catch (err) {
+    res.status(400).json(console.log("this is error"))
+  }
+
+})
 
 
 
