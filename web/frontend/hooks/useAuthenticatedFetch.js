@@ -3,7 +3,7 @@ import { useAppBridge } from "@shopify/app-bridge-react";
 import { Redirect } from "@shopify/app-bridge/actions";
 
 /**
- * A hook that returns an auth-aware fetch function.
+ * A  that returns an auth-aware fetch function.
  * @desc The returned fetch function that matches the browser's fetch API
  * See: https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API
  * It will provide the following functionality:

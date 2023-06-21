@@ -1,6 +1,6 @@
 import { LegacyCard, EmptyState, Page } from '@shopify/polaris';
 import React from 'react';
-import Account from './newAccount';
+import Result from "./Result"
 
 function Empty_State({ onAction }) {
     const handleAddNewAccount = () => {
@@ -17,7 +17,7 @@ function Empty_State({ onAction }) {
                 }}
 
             />
-            <LegacyCard sectioned>
+            {/* <LegacyCard sectioned>
 
                 <EmptyState
                     action={{
@@ -31,7 +31,8 @@ function Empty_State({ onAction }) {
                         No Account
                     </p>
                 </EmptyState>
-            </LegacyCard>
+            </LegacyCard> */}
+            < Result />
         </>
     );
 

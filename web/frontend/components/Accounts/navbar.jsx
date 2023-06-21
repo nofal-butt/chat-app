@@ -13,8 +13,8 @@ import {
 } from '@shopify/polaris';
 import { SettingsMajor, ProfileMinor, EmailMajor, ButtonMinor, BuyButtonVerticalLayoutMajor } from '@shopify/polaris-icons';
 import { useState, useCallback, } from 'react';
-import Empty_State from "./emptyState"
-import Account from "./newAccount"
+import Empty_State from "./newAccount"
+import Account from "./Account"
 
 function Navbar() {
 

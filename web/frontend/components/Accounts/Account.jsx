@@ -9,18 +9,12 @@ import {
 import React, { useEffect } from 'react';
 import axios from 'axios';
 import { useState, useCallback } from 'react';
-import { useAuthenticatedFetch } from '../hooks/useAuthenticatedFetch';
+import { useAuthenticatedFetch } from '../../hooks/useAuthenticatedFetch';
 import { Thumbnail } from '@shopify/polaris';
 
 
 function Account() {
     const fetch = useAuthenticatedFetch()
-    //-------------------toggle------------------------
-    const [open, setOpen] = useState(true);
-
-    const handleToggle = useCallback(() => setOpen((open) => !open), []);
-
-
 
     //------------------textfields---------------------
 
@@ -29,6 +23,7 @@ function Account() {
         phone: '',
         title: '',
         message: '',
+        toggle: true,
         notice: "I will be back soon",
         url: ""
     });
@@ -38,6 +33,20 @@ function Account() {
             ...predata, [name]: value
         }))
     });
+    //-------------------toggle------------------------
+    const [open, setOpen] = useState(false);
+
+    const handleToggle = useCallback(() => {
+        setOpen((open) => !open);
+        setData((prevData) => ({
+            ...prevData,
+            toggle: !prevData.toggle,
+        }));
+    }, []);
+
+
+
+
     //------------------------images -------------------
 
     const [files, setFiles] = useState("");
@@ -81,9 +90,9 @@ function Account() {
                 "https://api.cloudinary.com/v1_1/dfy2gjqhv/image/upload",
                 formData
             );
-            const data = response.data;
-            console.log(data);
-            setData({ ...data, url: data.secure_url });
+            const res = response.data;
+            console.log(res);
+            setData({ ...data, url: res.secure_url });
         } catch (error) {
             console.log(error);
         }
@@ -100,13 +109,11 @@ function Account() {
                 "Accept-Encoding": "gzip,deflate,compress"
             },
             body: JSON.stringify(data)
-        }).then((req, res) => {
-            res.text().catch(err => {
-                console.log(err.message)
-            })
+        }).then(() => {
+            console.log("Successfull data sand")
 
         }).catch((err) => {
-            console.log("foam submittion error")
+            console.log(err, "error")
 
         });
 
@@ -139,8 +146,8 @@ function Account() {
                             <Button plain destructive onClick={() => { setData({ ...data, url: "" }) }}>Remove Images</Button>
                         </div>
                         :
-                        <DropZone accept="image/*" type="image" onDrop={handleDrop}>
-                            <DropZone.FileUpload />
+                        <DropZone accept="image/*" type="image" onDrop={handleDrop} label="Account Avatar">
+                            <DropZone.FileUpload actionTitle='Add Image' />
                         </DropZone>
                 }
 
@@ -181,7 +188,7 @@ function Account() {
             />
 
             {/* --------------toggle----------------- */}
-            <Button
+            Always available online   <Button
                 onClick={handleToggle}
                 ariaExpanded={open}
                 ariaControls="basic-collapsible"
