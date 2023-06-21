@@ -17,50 +17,18 @@ import {
   SettingsMajor,
   EmailMajor,
 } from "@shopify/polaris-icons";
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback } from "react";
 import React from "react";
 import Tab from "../FloatingWidgets/Tabs";
 import ButtonTabs from "../Button/ButtonTabs";
-import SkeletonExample from "../Skeleton";
 import Plan from "../Plans/Plan";
 import Supports from "../Supports/Supports";
 import Settings from "../Settings/Settings";
+import Account from "../Accounts/Form";
+import Empty_State from "../Accounts/newAccount";
 
 function Sidebar() {
-  const defaultState = useRef({
-    emailFieldValue: "dharma@jadedpixel.com",
-    nameFieldValue: "Jaded Pixel",
-  });
-
-  const [toastActive, setToastActive] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isDirty, setIsDirty] = useState(false);
   const [mobileNavigationActive, setMobileNavigationActive] = useState(false);
-  const [modalActive, setModalActive] = useState(false);
-  const [showDisplay, setShowDisplay] = useState(false);
-
-  const [nameFieldValue, setNameFieldValue] = useState(
-    defaultState.current.nameFieldValue
-  );
-
-  const [emailFieldValue, setEmailFieldValue] = useState(
-    defaultState.current.emailFieldValue
-  );
-
-  const handleNameFieldChange = useCallback((value) => {
-    setNameFieldValue(value);
-    value && setIsDirty(true);
-  }, []);
-
-  const handleEmailFieldChange = useCallback((value) => {
-    setEmailFieldValue(value);
-    value && setIsDirty(true);
-  }, []);
-
-  const toggleToastActive = useCallback(
-    () => setToastActive((toastActive) => !toastActive),
-    []
-  );
 
   const toggleMobileNavigationActive = useCallback(
     () =>
@@ -70,19 +38,9 @@ function Sidebar() {
     []
   );
 
-  const toggleIsLoading = useCallback(
-    () => setIsLoading((isLoading) => !isLoading),
-    []
-  );
-
-  const toggleModalActive = useCallback(
-    () => setModalActive((modalActive) => !modalActive),
-    []
-  );
-
-  const toastMarkup = toastActive ? (
-    <Toast onDismiss={toggleToastActive} content="Changes saved" />
-  ) : null;
+  const handleNavigationAction = () => {
+    setNavigationContent(<Account />);
+  };
 
   const FloatingWidget = <Tab />;
 
@@ -98,38 +56,6 @@ function Sidebar() {
     navigationContent(Button); // Set showDisplay to true when Floating Widget is clicked
   }, []);
 
-  const actualPageMarkup = (
-    <Page>
-      <Layout>
-        <Layout.AnnotatedSection
-          title="Account details"
-          description="Jaded Pixel will use this as your account information."
-        >
-          <LegacyCard sectioned>
-            <FormLayout>
-              <TextField
-                label="Full name"
-                value={nameFieldValue}
-                onChange={handleNameFieldChange}
-                autoComplete="name"
-              />
-              <TextField
-                type="email"
-                label="Email"
-                value={emailFieldValue}
-                onChange={handleEmailFieldChange}
-                autoComplete="email"
-              />
-            </FormLayout>
-          </LegacyCard>
-          {showDisplay && <Display />}
-        </Layout.AnnotatedSection>
-      </Layout>
-    </Page>
-  );
-
-  // const loadingMarkup = isLoading ? <SkeletonExample /> : actualPageMarkup;
-
   const navigationMarkup = (
     <Navigation location="/">
       <Navigation.Section
@@ -138,7 +64,10 @@ function Sidebar() {
           {
             label: "Accounts",
             icon: ProfileMajor,
-            onClick: () => setNavigationContent(actualPageMarkup),
+            onClick: () =>
+              setNavigationContent(
+                <Empty_State onAction={handleNavigationAction} />
+              ),
           },
           {
             label: "Floating Widget",
@@ -170,7 +99,9 @@ function Sidebar() {
     </Navigation>
   );
 
-  const [navigationContent, setNavigationContent] = useState(actualPageMarkup);
+  const [navigationContent, setNavigationContent] = useState(
+    <Empty_State onAction={handleNavigationAction} />
+  );
 
   return (
     <div style={{ height: "500px" }}>
