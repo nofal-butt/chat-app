@@ -1,9 +1,11 @@
 import {
     IndexTable,
     LegacyCard,
+    Link,
     useIndexResourceState,
     Text,
-    Badge,
+    Avatar,
+    Badge
 } from '@shopify/polaris';
 import React, { useState, useEffect } from 'react';
 import { useAuthenticatedFetch } from '../../hooks/useAuthenticatedFetch';
@@ -29,31 +31,59 @@ function Result() {
 
 
     }, [])
+    const customers = [
+        {
+            id: '3411',
+            url: '#',
+            name: 'Mae Jemison',
+            location: 'Decatur, USA',
+            orders: 20,
+            amountSpent: '$2,400',
+        },
+        {
+            id: '2561',
+            url: '#',
+            name: 'Ellen Ochoa',
+            location: 'Los Angeles, USA',
+            orders: 30,
+            amountSpent: '$140',
+        },
+    ];
     const resourceName = {
-        singular: 'items',
-        plural: 'items',
+        singular: 'customer',
+        plural: 'customers',
     };
 
     const { selectedResources, allResourcesSelected, handleSelectionChange } =
-        useIndexResourceState(items);
+        useIndexResourceState(customers);
 
     const rowMarkup = items?.map(
-        (
-            { id, name, url, phone, title, notice },
-            index,
-        ) => (
+        ({ id, name, url, phone, title, notice, toggle }, index) => (
+
             <IndexTable.Row
                 id={id}
                 key={id}
                 selected={selectedResources.includes(id)}
                 position={index}
             >
-                <IndexTable.Cell>{name}</IndexTable.Cell>
-                <IndexTable.Cell> {url}</IndexTable.Cell>
+                <IndexTable.Cell>
+                    {/* <Link
+                        dataPrimaryLink
+                        url={url}
+                        onClick={() => console.log(`Clicked ${name}`)}
+                    > */}
+                    {name}
+                    {/* </Link> */}
+                </IndexTable.Cell>
+                <IndexTable.Cell>{<Avatar customer source={url} />}</IndexTable.Cell>
                 <IndexTable.Cell>{phone}</IndexTable.Cell>
                 <IndexTable.Cell>{title}</IndexTable.Cell>
-                <IndexTable.Cell>{notice}</IndexTable.Cell>
-                {/* <IndexTable.Cell>{fulfillmentStatus}</IndexTable.Cell> */}
+                <IndexTable.Cell>{
+
+                    !toggle ? <Badge status="success">online</Badge> : <Badge>Offline</Badge>
+
+                }</IndexTable.Cell>
+
             </IndexTable.Row>
         ),
     );
@@ -62,7 +92,7 @@ function Result() {
         <LegacyCard>
             <IndexTable
                 resourceName={resourceName}
-                itemCount={items?.length}
+                itemCount={customers.length}
                 selectedItemsCount={
                     allResourcesSelected ? 'All' : selectedResources.length
                 }
@@ -72,8 +102,24 @@ function Result() {
                     { title: 'Avatar' },
                     { title: 'Number' },
                     { title: 'Title' },
-                    { title: 'Active Days ' },
-                    // { title: 'Fulfillment status' },
+                    { title: 'Actives Days' },
+                    // {
+                    //     id: 'order-count',
+                    //     title: (
+                    //         <Text as="span" alignment="end">
+                    //             Order count
+                    //         </Text>
+                    //     ),
+                    // },
+                    // {
+                    //     id: 'amount-spent',
+                    //     hidden: false,
+                    //     title: (
+                    //         <Text as="span" alignment="end">
+                    //             Amount spent
+                    //         </Text>
+                    //     ),
+                    // },
                 ]}
             >
                 {rowMarkup}

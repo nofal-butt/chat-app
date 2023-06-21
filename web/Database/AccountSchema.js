@@ -24,6 +24,10 @@ const Account = mongoose.Schema({
         type: String,
         require: true
     },
+    toggle: {
+        type: Boolean,
+        require: true
+    },
     shop: {
         type: String,
         require: true

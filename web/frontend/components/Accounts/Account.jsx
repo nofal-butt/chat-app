@@ -15,12 +15,6 @@ import { Thumbnail } from '@shopify/polaris';
 
 function Account() {
     const fetch = useAuthenticatedFetch()
-    //-------------------toggle------------------------
-    const [open, setOpen] = useState(true);
-
-    const handleToggle = useCallback(() => setOpen((open) => !open), []);
-
-
 
     //------------------textfields---------------------
 
@@ -29,6 +23,7 @@ function Account() {
         phone: '',
         title: '',
         message: '',
+        toggle: true,
         notice: "I will be back soon",
         url: ""
     });
@@ -38,6 +33,20 @@ function Account() {
             ...predata, [name]: value
         }))
     });
+    //-------------------toggle------------------------
+    const [open, setOpen] = useState(false);
+
+    const handleToggle = useCallback(() => {
+        setOpen((open) => !open);
+        setData((prevData) => ({
+            ...prevData,
+            toggle: !prevData.toggle,
+        }));
+    }, []);
+
+
+
+
     //------------------------images -------------------
 
     const [files, setFiles] = useState("");
@@ -137,8 +146,8 @@ function Account() {
                             <Button plain destructive onClick={() => { setData({ ...data, url: "" }) }}>Remove Images</Button>
                         </div>
                         :
-                        <DropZone accept="image/*" type="image" onDrop={handleDrop}>
-                            <DropZone.FileUpload />
+                        <DropZone accept="image/*" type="image" onDrop={handleDrop} label="Account Avatar">
+                            <DropZone.FileUpload actionTitle='Add Image' />
                         </DropZone>
                 }
 
@@ -179,7 +188,7 @@ function Account() {
             />
 
             {/* --------------toggle----------------- */}
-            <Button
+            Always available online   <Button
                 onClick={handleToggle}
                 ariaExpanded={open}
                 ariaControls="basic-collapsible"
