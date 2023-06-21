@@ -7,6 +7,7 @@ import serveStatic from "serve-static";
 import shopify from "./shopify.js";
 import productCreator from "./product-creator.js";
 import GDPRWebhookHandlers from "./gdpr.js";
+import axios from "axios"
 
 const PORT = parseInt(
   process.env.BACKEND_PORT || process.env.PORT || "3000",
@@ -38,7 +39,18 @@ app.post(
 app.use("/api/*", shopify.validateAuthenticatedSession());
 
 app.use(express.json());
+//--------------------------------------starting pont------
 
+app.post("/api/Account", async (req, res) => {
+  console.log(req.body)
+})
+
+
+
+
+
+
+//--------------------------------------------------------------------------------------------------------------------------------------
 app.get("/api/products/count", async (_req, res) => {
   const countData = await shopify.api.rest.Product.count({
     session: res.locals.shopify.session,
@@ -62,6 +74,7 @@ app.get("/api/products/create", async (_req, res) => {
 
 app.use(shopify.cspHeaders());
 app.use(serveStatic(STATIC_PATH, { index: false }));
+console.log(`SERVER IS RUNNING ${PORT}`)
 
 app.use("/*", shopify.ensureInstalledOnShop(), async (_req, res, _next) => {
   return res
