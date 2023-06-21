@@ -13,7 +13,6 @@ import React, { useEffect } from "react";
 import axios from "axios";
 import { useState, useCallback } from "react";
 import { useAuthenticatedFetch } from "../../hooks/useAuthenticatedFetch";
-import { Thumbnail } from "@shopify/polaris";
 
 function Account() {
   const fetch = useAuthenticatedFetch();

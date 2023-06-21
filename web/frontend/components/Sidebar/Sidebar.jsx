@@ -1,14 +1,4 @@
-import {
-  AppProvider,
-  LegacyCard,
-  FormLayout,
-  Frame,
-  Layout,
-  Navigation,
-  Page,
-  TextField,
-  Toast,
-} from "@shopify/polaris";
+import { AppProvider, Frame, Navigation } from "@shopify/polaris";
 import {
   ProfileMajor,
   BuyButtonVerticalLayoutMajor,
