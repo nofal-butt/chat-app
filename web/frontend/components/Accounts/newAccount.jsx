@@ -33,28 +33,7 @@ function Empty_State({ onAction }) {
       });
   }, []);
 
-<<<<<<< HEAD
-            >
 
-                <LegacyCard sectioned>
-                    {/* <Result /> */}
-                    <EmptyState
-                        action={{
-                            content: 'Create New Account',
-                            onAction: handleAddNewAccount,
-                        }}
-                        image="https://cdn.shopify.com/s/files/1/0262/4071/2726/files/emptystate-files.png"
-                        fullWidth
-                    >
-                        <p>
-                            No Account
-                        </p>
-                    </EmptyState>
-                </LegacyCard>
-            </Page >
-        </>
-    );
-=======
   const resourceName = {
     singular: "item",
     plural: "items",
@@ -62,14 +41,13 @@ function Empty_State({ onAction }) {
 
   const { selectedResources, allResourcesSelected, handleSelectionChange } =
     useIndexResourceState(items);
->>>>>>> 8a14a64546352115386e0263d2131d3fa67c79cf
+
 
   const rowMarkup = items?.map(
-    ({ id, name, url, phone, title, toggle }, index) => (
+    ({ _id, name, url, phone, title, toggle }, index) => (
       <IndexTable.Row
-        id={id}
-        key={id}
-        selected={selectedResources.includes(id)}
+        key={_id}
+        selected={selectedResources.includes(_id)}
         position={index}
       >
         <IndexTable.Cell>{name}</IndexTable.Cell>
