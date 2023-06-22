@@ -7,7 +7,7 @@ import serveStatic from "serve-static";
 import shopify from "./shopify.js";
 import productCreator from "./product-creator.js";
 import GDPRWebhookHandlers from "./gdpr.js";
-import mongoose from "mongoose"
+import mongoose from 'mongoose';
 import AccountModel from "./Database/AccountSchema.js";
 
 const PORT = parseInt(
@@ -16,7 +16,7 @@ const PORT = parseInt(
 );
 mongoose.connect("mongodb://0.0.0.0:/Account",).then(() => {
   console.log("Connected to MongoDB");
-}).catch((err) => {
+}).catch((/** @type {any} */ err) => {
   console.log(err)
 });
 
