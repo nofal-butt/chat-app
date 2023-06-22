@@ -9,6 +9,7 @@ import {
 } from '@shopify/polaris';
 import React, { useState, useEffect } from 'react';
 import { useAuthenticatedFetch } from '../../hooks/useAuthenticatedFetch';
+import Empty_State from './newAccount';
 
 function Result() {
     const fetch = useAuthenticatedFetch()
@@ -58,7 +59,7 @@ function Result() {
         useIndexResourceState(customers);
 
     const rowMarkup = items?.map(
-        ({ id, name, url, phone, title, notice, toggle }, index) => (
+        ({ id, name, url, phone, title, toggle }, index) => (
 
             <IndexTable.Row
                 id={id}
@@ -67,13 +68,13 @@ function Result() {
                 position={index}
             >
                 <IndexTable.Cell>
-                    {/* <Link
+                    <Link
                         dataPrimaryLink
-                        url={url}
+                        // url={}
                         onClick={() => console.log(`Clicked ${name}`)}
-                    > */}
-                    {name}
-                    {/* </Link> */}
+                    >
+                        {name}
+                    </Link>
                 </IndexTable.Cell>
                 <IndexTable.Cell>{<Avatar customer source={url} />}</IndexTable.Cell>
                 <IndexTable.Cell>{phone}</IndexTable.Cell>
@@ -90,40 +91,47 @@ function Result() {
 
     return (
         <LegacyCard>
-            <IndexTable
-                resourceName={resourceName}
-                itemCount={customers.length}
-                selectedItemsCount={
-                    allResourcesSelected ? 'All' : selectedResources.length
-                }
-                onSelectionChange={handleSelectionChange}
-                headings={[
-                    { title: 'Account Name' },
-                    { title: 'Avatar' },
-                    { title: 'Number' },
-                    { title: 'Title' },
-                    { title: 'Actives Days' },
-                    // {
-                    //     id: 'order-count',
-                    //     title: (
-                    //         <Text as="span" alignment="end">
-                    //             Order count
-                    //         </Text>
-                    //     ),
-                    // },
-                    // {
-                    //     id: 'amount-spent',
-                    //     hidden: false,
-                    //     title: (
-                    //         <Text as="span" alignment="end">
-                    //             Amount spent
-                    //         </Text>
-                    //     ),
-                    // },
-                ]}
-            >
-                {rowMarkup}
-            </IndexTable>
+            {rowMarkup.length === 0(
+                <Empty_State />
+            )}
+
+            {rowMarkup?.length > 0 && (
+                <IndexTable
+                    resourceName={resourceName}
+                    itemCount={customers.length}
+                    selectedItemsCount={
+                        allResourcesSelected ? 'All' : selectedResources.length
+                    }
+                    onSelectionChange={handleSelectionChange}
+                    headings={[
+                        { title: 'Account Name' },
+                        { title: 'Avatar' },
+                        { title: 'Number' },
+                        { title: 'Title' },
+                        { title: 'Actives Days' },
+                        // {
+                        //     id: 'order-count',
+                        //     title: (
+                        //         <Text as="span" alignment="end">
+                        //             Order count
+                        //         </Text>
+                        //     ),
+                        // },
+                        // {
+                        //     id: 'amount-spent',
+                        //     hidden: false,
+                        //     title: (
+                        //         <Text as="span" alignment="end">
+                        //             Amount spent
+                        //         </Text>
+                        //     ),
+                        // },
+                    ]}
+                >
+                    {rowMarkup}
+                </IndexTable>
+            )}
+
         </LegacyCard>
     );
 }
