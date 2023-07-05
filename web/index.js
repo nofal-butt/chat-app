@@ -7,18 +7,14 @@ import serveStatic from "serve-static";
 import shopify from "./shopify.js";
 import productCreator from "./product-creator.js";
 import GDPRWebhookHandlers from "./gdpr.js";
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 import AccountModel from "./Database/AccountSchema.js";
 
 const PORT = parseInt(
   process.env.BACKEND_PORT || process.env.PORT || "3000",
   10
 );
-mongoose.connect("mongodb://0.0.0.0:/Account",).then(() => {
-  console.log("Connected to MongoDB");
-}).catch((/** @type {any} */ err) => {
-  console.log(err)
-});
+mongoose.connect("mongodb://0.0.0.0:/Account");
 
 const STATIC_PATH =
   process.env.NODE_ENV === "production"
@@ -48,35 +44,39 @@ app.use(express.json());
 //--------------------------------------starting pont------
 
 app.post("/api/Account", async (req, res) => {
-  // console.log(req.body)
-  const data = req.body
-  const session = res.locals.shopify.session
-  const shop = session.shop
-  data["shop"] = shop
+  const data = req.body;
+  const session = res.locals.shopify.session;
+  const shop = session.shop;
+  data["shop"] = shop;
+
+  await AccountModel.findOneAndUpdate({ _id: data?._id }, { selected: true });
+  // await AccountModel.findOne({ _id: data?._id });
   const user = new AccountModel(data);
   try {
-    await user.save()
-    res.send("haloo i am fine")
+    await user.save();
+    res.status(200).send({ message: "Data Save Successfully" });
   } catch (err) {
-    console.log(err)
+    console.log(err);
   }
+});
 
-})
 app.get("/api/Account", async (req, res) => {
-  const data = await AccountModel.find()
-  console.log(data)
+  const data = await AccountModel.find();
   try {
-    res.json(data)
-
+    res.status(200).json(data);
   } catch (err) {
-    res.status(400).json(console.log("this is error"))
+    res.status(400).json(console.log("Error"));
   }
+});
 
-})
+app.delete("/api/Select", async (req, res) => {
+  const { ids } = req.body;
+  console.log(ids, "THERE IS AN ID");
+  const condition = { _id: { $in: ids } };
 
-
-
-
+  await AccountModel.updateMany(condition, { selected: false }).exec();
+  res.send("delete");
+});
 
 //--------------------------------------------------------------------------------------------------------------------------------------
 app.get("/api/products/count", async (_req, res) => {
@@ -102,7 +102,7 @@ app.get("/api/products/create", async (_req, res) => {
 
 app.use(shopify.cspHeaders());
 app.use(serveStatic(STATIC_PATH, { index: false }));
-console.log(`SERVER IS RUNNING ${PORT}`)
+console.log(`SERVER IS RUNNING ${PORT}`);
 
 app.use("/*", shopify.ensureInstalledOnShop(), async (_req, res, _next) => {
   return res

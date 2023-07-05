@@ -25,7 +25,6 @@ function Empty_State({ onAction }) {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
         setItems(data);
       })
       .catch((err) => {

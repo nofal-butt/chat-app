@@ -84,7 +84,7 @@ export default function Supports() {
                   label="Message"
                   onChange={() => {}}
                   placeholder="Leave your message"
-                  maxHeight="210px"
+                  multiline={5}
                   autoComplete="off"
                   requiredIndicator
                 />

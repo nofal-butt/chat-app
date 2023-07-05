@@ -1,143 +1,214 @@
-import {
-  Page,
-  Layout,
-  Combobox,
-  ButtonGroup,
-  Button,
-  Checkbox,
-  Listbox,
-  Icon,
-  Select,
-} from "@shopify/polaris";
-import { useState, useCallback, useMemo } from "react";
+import { Listbox, Combobox, Icon, Avatar, Button } from "@shopify/polaris";
+import { SearchMinor } from "@shopify/polaris-icons";
+import { useState, useCallback, useEffect } from "react";
+import { useAuthenticatedFetch } from "../../hooks/useAuthenticatedFetch";
 import EmptyStateExample from "../EmptyStateExample";
+import SkeletonExample from "../Skeleton";
+import "./Style.css";
 
 export default function SearchBar() {
-  const [searchValue, setSearchValue] = useState("");
-  const [selectedOptions, setSelectedOptions] = useState([]);
-  const [searchClicked, setSearchClicked] = useState(false);
+  const fetch = useAuthenticatedFetch();
+  const [options, setOptions] = useState();
+  const [inputValue, setInputValue] = useState("");
+  const [selectedAccount, setSelectedAccount] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const options = ["Option 1", "Option 2", "Option 3", "Option 4", "Option 5"];
+  useEffect(() => {
+    fetch("/api/Account", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        "Accept-Encoding": "gzip,deflate,compress",
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setOptions(data);
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
 
-  const handleSearchChange = (value) => {
-    setSearchValue(value);
-    // setSearchClicked(false);
-  };
+  useEffect(() => {
+    fetch(`/api/Account`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        "Accept-Encoding": "gzip,deflate,compress",
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setSelectedAccount(data.filter((option) => option.selected));
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        console.log(err, "error");
+      });
+  }, []);
 
-  const handleSearchClick = () => {
-    setSearchClicked(true);
-  };
+  const updateText = useCallback(
+    (value) => {
+      setInputValue(value);
 
-  const handleCheckboxChange = (option) => {
-    const isSelected = selectedOptions.includes(option);
-    let updatedSelectedOptions;
+      if (!options) {
+        return;
+      }
 
-    if (isSelected) {
-      updatedSelectedOptions = selectedOptions.filter(
-        (item) => item !== option
+      if (value === "") {
+        setOptions(options);
+        return;
+      }
+
+      const filterRegex = new RegExp(value, "i");
+      const resultOptions = options.filter((option) =>
+        option.name.match(filterRegex)
       );
-    } else {
-      updatedSelectedOptions = [...selectedOptions, option];
-    }
-
-    setSelectedOptions(updatedSelectedOptions);
-  };
-
-  const handleDeleteClick = () => {
-    selectedOptions.forEach((option) => {
-      // Perform delete operation for the option
-      console.log(`Deleting ${option}`);
-    });
-
-    setSelectedOptions([]);
-  };
-
-  const filteredOptions = options.filter((option) =>
-    option.toLowerCase().includes(searchValue.toLowerCase())
+      setOptions(resultOptions);
+    },
+    [options]
   );
 
-  const selectedItemCount = selectedOptions.length;
-  console.log(selectedItemCount);
+  const selectedOption = (option) => {
+    const updatedOption = { ...option, selected: true };
+    console.log("updatedOption", updatedOption);
+
+    fetch(`/api/Account`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        "Accept-Encoding": "gzip,deflate,compress",
+      },
+      body: JSON.stringify(updatedOption),
+    })
+      .then((res) => {
+        console.log("Data selected successfully");
+        if (updatedOption.selected) {
+          setSelectedAccount((prevSelectedAccount) => [
+            ...prevSelectedAccount,
+            updatedOption,
+          ]);
+        }
+      })
+      .catch((err) => {
+        console.log(err, "error");
+      });
+  };
+
+  const handleDelete = (_id) => {
+    console.log(_id);
+    fetch("/api/Select", {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        "Accept-Encoding": "gzip,deflate,compress",
+      },
+
+      body: JSON.stringify({ ids: [_id] }),
+    })
+      .then(() => {
+        setSelectedAccount((prevSelectedAccount) =>
+          prevSelectedAccount.filter((option) => option._id !== _id)
+        );
+      })
+      .catch((err) => {
+        console.log(err, "error");
+      });
+  };
 
   return (
-    <Page>
-      <Layout>
-        <Layout.Section>
-          <div>
-            <Select
-              options={options.map((option) => ({
-                label: option,
-                value: option,
-              }))}
-              value={searchValue}
-              onChange={handleSearchChange}
-              onSelect={handleSearchClick}
-            />
-            <div
-              style={{
-                fontSize: "1rem",
-                fontWeight: "bold",
-                margin: "10px 10px 10px 10px",
-              }}
-            >
-              Select Account:
+    <div>
+      {isLoading ? (
+        <SkeletonExample />
+      ) : (
+        <>
+          <Combobox
+            activator={
+              <Combobox.TextField
+                prefix={<Icon source={SearchMinor} />}
+                onChange={updateText}
+                label="Search tags"
+                labelHidden
+                value={inputValue}
+                placeholder="Search tags"
+                autoComplete="off"
+              />
+            }
+          >
+            <div className="Listbox">
+              {options?.length > 0
+                ? options?.map((option) => {
+                    return (
+                      <div>
+                        <Listbox>
+                          <Listbox.Option
+                            key={option?._id}
+                            value={option?.value}
+                            selected={selectedAccount === selectedAccount?._id}
+                            accessibilityLabel={option?.name}
+                          >
+                            <div
+                              className="LISTBOXCLASS"
+                              onClick={() => selectedOption(option)}
+                            >
+                              <Avatar
+                                size="medium"
+                                name={option?.name}
+                                source={option?.url}
+                              />
+                              Account( Name: {option?.name} - Number:{" "}
+                              {option?.phone} - Title: {option?.title})
+                            </div>
+                          </Listbox.Option>
+                        </Listbox>
+                      </div>
+                    );
+                  })
+                : null}
             </div>
+          </Combobox>
 
-            {searchValue && filteredOptions.length > 0 ? (
-              <div style={{ padding: "20px", fontSize: "1rem" }}>
-                {selectedItemCount > 0 && !searchClicked && (
-                  <div style={{ padding: "0px" }}>
-                    <ButtonGroup segmented>
-                      <Button>
-                        <div style={{ display: "flex" }}>
-                          <div style={{ margin: "-1px", paddingRight: "5px" }}>
-                            <Checkbox
-                              checked
-                              label={
-                                <>
-                                  {selectedItemCount}
-                                  {selectedItemCount > 1
-                                    ? " Selected"
-                                    : "Selected"}
-                                  selected
-                                </>
-                              }
-                              labelHidden
-                              onChange={() => {}}
-                            />
-                          </div>
-                          {selectedItemCount}
-                          {selectedItemCount > 1 ? " items" : " Selected"}
-                        </div>
-                      </Button>
-                      <Button onClick={handleDeleteClick}>
-                        Remove Account
-                      </Button>
-                    </ButtonGroup>
-                  </div>
-                )}
+          {selectedAccount && selectedAccount?.length > 0 ? (
+            <div>
+              <div className="data">Selected Account:</div>
+              <div className="Record">
+                {selectedAccount?.map((option) => (
+                  <div>
+                    <div className="text">
+                      <div className="chackbox"></div>
+                      <div className="img">
+                        <Avatar
+                          size="medium"
+                          name={option?.name}
+                          source={option?.url}
+                        />
+                      </div>
 
-                {searchValue && (
-                  <div style={{ margin: "10px 10px 10px 10px " }}>
-                    {filteredOptions.map((option) => (
-                      <Checkbox
-                        key={option}
-                        checked={selectedOptions.includes(option)}
-                        label={option}
-                        onChange={() => handleCheckboxChange(option)}
-                      />
-                    ))}
+                      <div className="text_2">
+                        <div>{option?.name}</div>
+                        <div>{option?.title}</div>
+                      </div>
+                      <div className="Button">
+                        <Button onClick={() => handleDelete(option._id)}>
+                          Delete Account
+                        </Button>
+                      </div>
+                    </div>
                   </div>
-                )}
+                ))}
               </div>
-            ) : (
-              <div style={{ height: "100%", width: "100%", marginTop: "10px" }}>
-                <EmptyStateExample />
-              </div>
-            )}
-          </div>
-        </Layout.Section>
-      </Layout>
-    </Page>
+            </div>
+          ) : (
+            <EmptyStateExample />
+          )}
+        </>
+      )}
+    </div>
   );
 }

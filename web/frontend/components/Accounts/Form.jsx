@@ -18,7 +18,6 @@ function Account() {
   const fetch = useAuthenticatedFetch();
 
   //------------------textfields---------------------
-
   const [data, setData] = useState({
     name: "",
     phone: "",
@@ -35,6 +34,7 @@ function Account() {
       [name]: value,
     }));
   });
+
   //-------------------toggle------------------------
   const [open, setOpen] = useState(false);
 
@@ -51,6 +51,7 @@ function Account() {
   const [files, setFiles] = useState("");
   const [rejectedFiles, setRejectedFiles] = useState([]);
   const hasError = rejectedFiles.length > 0;
+
   useEffect(() => {
     if (files) {
       console.log(files);
@@ -206,7 +207,7 @@ function Account() {
           helpText="Use [sgwa_page_title] and [sgwa_page_url] shortcodes to output the page's title and URL respectively."
         />
         {/* --------------toggle----------------- */}
-        Always available online{" "}
+        Always available online
         <Button
           onClick={handleToggle}
           ariaExpanded={open}
