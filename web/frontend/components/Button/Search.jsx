@@ -77,19 +77,19 @@ export default function SearchBar() {
   const optionsMarkup =
     options.length > 0
       ? options.map((option) => {
-          const { label, value } = option;
+        const { label, value } = option;
 
-          return (
-            <Listbox.Option
-              key={`${value}`}
-              value={value}
-              selected={selectedOption === value}
-              accessibilityLabel={label}
-            >
-              {label}
-            </Listbox.Option>
-          );
-        })
+        return (
+          <Listbox.Option
+            key={`${value}`}
+            value={value}
+            selected={selectedOption === value}
+            accessibilityLabel={label}
+          >
+            {label}
+          </Listbox.Option>
+        );
+      })
       : null;
 
   //   const handleCheckboxChange = useCallback(() => {
@@ -201,7 +201,7 @@ export default function SearchBar() {
                                   </>
                                 }
                                 labelHidden
-                                onChange={() => {}}
+                                onChange={() => { }}
                               />
                             </div>
                             {selectedItemCount}

@@ -14,8 +14,7 @@ import ButtonTabs from "../Button/ButtonTabs";
 import Plan from "../Plans/Plan";
 import Supports from "../Supports/Supports";
 import Settings from "../Settings/Settings";
-import Account from "../Accounts/Form";
-import Empty_State from "../Accounts/newAccount";
+import Account from "../Accounts/Account";
 
 function Sidebar() {
   const [mobileNavigationActive, setMobileNavigationActive] = useState(false);
@@ -28,9 +27,6 @@ function Sidebar() {
     []
   );
 
-  const handleNavigationAction = () => {
-    setNavigationContent(<Account />);
-  };
 
   const FloatingWidget = <Tab />;
 
@@ -42,9 +38,6 @@ function Sidebar() {
 
   const Support = <Supports />;
 
-  const handleDisplay = useCallback(() => {
-    navigationContent(Button); // Set showDisplay to true when Floating Widget is clicked
-  }, []);
 
   const navigationMarkup = (
     <Navigation location="/">
@@ -55,9 +48,7 @@ function Sidebar() {
             label: "Accounts",
             icon: ProfileMajor,
             onClick: () =>
-              setNavigationContent(
-                <Empty_State onAction={handleNavigationAction} />
-              ),
+              setNavigationContent(<Account />),
           },
           {
             label: "Floating Widget",
@@ -90,7 +81,7 @@ function Sidebar() {
   );
 
   const [navigationContent, setNavigationContent] = useState(
-    <Empty_State onAction={handleNavigationAction} />
+    <Account />
   );
 
   return (

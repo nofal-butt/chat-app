@@ -9,6 +9,7 @@ import productCreator from "./product-creator.js";
 import GDPRWebhookHandlers from "./gdpr.js";
 import mongoose from 'mongoose';
 import AccountModel from "./Database/AccountSchema.js";
+import SupportModel from "./Database/SupportsSchemaa.js"
 
 const PORT = parseInt(
   process.env.BACKEND_PORT || process.env.PORT || "3000",
@@ -51,20 +52,51 @@ app.post("/api/Account", async (req, res) => {
   // console.log(req.body)
   const data = req.body
   const session = res.locals.shopify.session
+  console.log(session)
   const shop = session.shop
   data["shop"] = shop
   const user = new AccountModel(data);
   try {
     await user.save()
-    res.send("haloo i am fine")
+    res.send("Data Save Successfully")
   } catch (err) {
     console.log(err)
   }
 
 })
+app.put("/api/Account/:id", async (req, res) => {
+  const accountId = req.params.id;
+  const updatedData = req.body;
+  const session = res.locals.shopify.session;
+
+  const shop = session.shop;
+  updatedData["shop"] = shop;
+
+  try {
+    const updatedUser = await AccountModel.findByIdAndUpdate(
+      accountId,
+      updatedData,
+      { new: true }
+    );
+
+    if (!updatedUser) {
+      return res.status(404).send("Account not found");
+    }
+
+    res.send("Data updated successfully");
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Internal server error");
+  }
+});
+
+
+
+
+
 app.get("/api/Account", async (req, res) => {
   const data = await AccountModel.find()
-  console.log(data)
+  // console.log(data)
   try {
     res.json(data)
 
@@ -73,8 +105,32 @@ app.get("/api/Account", async (req, res) => {
   }
 
 })
+app.delete("/api/delete", async (req, res) => {
+  const id = req.body
+  const condition = { _id: { $in: id } };
+  // console.log(id)
+  // await AccountModel.findByIdAndDelete(id).exec()
+  await AccountModel.deleteMany(condition).exec()
 
+  res.send("delete")
 
+})
+
+// app.post("/api/Account/support", async (req, res) => {
+//   // console.log(req.body)
+//   const data = req.body
+//   const session = res.locals.shopify.session
+//   const shop = session.shop
+//   data["shop"] = shop
+//   const user = new AccountModel(data);
+//   try {
+//     await user.save()
+//     res.send("Data Save Successfully")
+//   } catch (err) {
+//     console.log(err)
+//   }
+
+// })
 
 
 

@@ -9,8 +9,70 @@ import {
 } from "@shopify/polaris";
 import { EmailMajor } from "@shopify/polaris-icons";
 import React from "react";
+import { useState, useCallback } from "react";
+import { useAuthenticatedFetch } from "../../hooks/useAuthenticatedFetch";
 
 export default function Supports() {
+  const fetch = useAuthenticatedFetch();
+
+  const [data, setData] = useState({
+    StoreURL: "",
+    name: "",
+    email: "",
+    Message: "",
+    password: "",
+
+  });
+
+
+  const handleTextFieldChange = useCallback((value, name) => {
+
+    setData((predata) => ({
+      ...predata,
+      [name]: value,
+    }));
+  });
+
+
+  const handleSubmit = () => {
+
+    console.log(data);
+    // setRedirectToOther(true);
+    // fetch("/api/Account", {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //     Accept: "application/json",
+    //     "Accept-Encoding": "gzip,deflate,compress",
+    //   },
+    //   body: JSON.stringify(data),
+    // })
+    //   .then(() => {
+    //     toast.success('Successfully Account Create', {
+    //       // className: 'custom-toast',
+    //       // style: {
+    //       //   backgroundColor: 'purple',
+    //       //   color: 'white',
+    //       //   // Add any other custom styles you want
+    //       // },
+    //       position: toast.POSITION.BOTTOM_CENTER,
+    //       autoClose: 3000, // Duration in milliseconds
+    //       hideProgressBar: false,
+    //     });
+    //     console.log("Successfull data send");
+    //     setShowEmptyState(true);
+    //   })
+    //   .catch((err) => {
+    //     console.log(err, "error");
+    //   });
+
+
+  };
+
+
+
+
+
   return (
     <div style={{ textAlign: "center", marginTop: "30px" }}>
       <Page narrowWidth>
@@ -52,43 +114,46 @@ export default function Supports() {
               </div>
               <FormLayout>
                 <TextField
-                  type="storename"
+                  type="url"
                   label="Store URL:"
-                  value="https://paractice2.myshopify.com"
-                  onChange={() => {}}
+                  value={data.StoreURL}
+                  onChange={(value) => handleTextFieldChange(value, "StoreURL")}
                   autoComplete="off"
                   requiredIndicator
                 />
                 <TextField
                   label="Password (if your store is in development mode):"
-                  onChange={() => {}}
+                  type="password"
+                  value={data.password}
+                  onChange={(value) => handleTextFieldChange(value, "password")}
                   autoComplete="off"
                 />
                 <TextField
                   label="Email Address:"
                   type="email"
-                  value="umarkhan7672@gmail.com"
-                  onChange={() => {}}
+                  value={data.email}
+                  onChange={(value) => handleTextFieldChange(value, "email")}
                   autoComplete="email"
                   requiredIndicator
                 />
                 <TextField
-                  type="name"
+                  type="text"
                   label="Your Name:"
-                  value="Muhammad Umar Khan"
-                  onChange={() => {}}
+                  value={data.name}
+                  onChange={(value) => handleTextFieldChange(value, "name")}
                   autoComplete="off"
                 />
                 <TextField
-                  type="message:"
+                  type="text"
                   label="Message"
-                  onChange={() => {}}
+                  value={data.Message}
+                  onChange={(value) => handleTextFieldChange(value, "Message")}
                   placeholder="Leave your message"
                   maxHeight="210px"
                   autoComplete="off"
                   requiredIndicator
                 />
-                <Button primary>Send Email</Button>
+                <Button primary onClick={handleSubmit}>Send Email</Button>
               </FormLayout>
             </LegacyCard>
           </Layout.Section>
