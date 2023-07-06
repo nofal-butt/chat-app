@@ -1,4 +1,5 @@
 import mongoose from "mongoose"
+
 const Account = mongoose.Schema({
     name: {
         type: String,
@@ -31,9 +32,12 @@ const Account = mongoose.Schema({
     shop: {
         type: String,
         require: true
+    },
+    selected:{
+        type:Boolean,
+        require:false,
+        default: false,
     }
-
-
 })
 
 const AccountModel = mongoose.model("user", Account)

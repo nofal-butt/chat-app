@@ -1,0 +1,150 @@
+#myElement,
+#myElements,
+#myElementss,
+#myElementsss  {
+	display: none;
+}
+  
+/* Popup container - can be anything you want */
+.popup {
+	cursor: pointer;
+	position: absolute;
+	  bottom: 10%;
+	  right: 4.5%;
+	  background-color: #0E91C6;
+	  color: #fff;
+	  border-radius: 50px;
+	  text-align: center;
+	  font-size: 30px;
+	  box-shadow: 2px 2px 3px #999;
+	  z-index: 100;
+	  padding-left: 12px;
+	  padding-right: 12px;
+  }
+  
+  /* The actual popup */
+  .popup .popuptext {
+	visibility: hidden;
+	width: 60px;
+	color: black;
+	text-align: center;
+	border-radius: 6px; 
+	padding: 0;
+	position: absolute;
+	z-index: 1;
+	bottom: 125%;
+	left: 50%;
+	margin-left: -30px;
+	display: flex;
+	flex-direction: column;
+	}
+  
+  /* Popup arrow */
+  .popup .popuptext::after {
+	position: absolute;
+	top: 100%;
+	left: 50%;
+	margin-left: -5px;
+	border-width: 5px;
+	border-style: solid;
+	border-color: #555 transparent transparent transparent;
+  }
+	
+  /* Toggle this class - hide and show the popup */
+  .popup .show {
+	visibility: visible;
+	-webkit-animation: fadeIn 1s;
+	animation: fadeIn 1s;
+  }
+  
+  .whatsapp-icon{
+	cursor: pointer;
+	position: relative;
+	  bottom: 20%;
+	  right: 5%;
+	padding: 10px;
+	  background-color: #fff;
+	  color: #25d366;
+	  border-radius: 50px;
+	  text-align: center;
+	  font-size: 30px;
+	  box-shadow: 2px 2px 3px #999;
+	  z-index: 100;
+	  margin: 5px;
+  }
+  
+  .messanger-icon{
+	cursor: pointer;
+	position: relative;
+	  bottom: 30%;
+	  right: 5%;
+	padding: 10px;
+	  background-color: #fff;
+	  color: #0099FF;
+	  border-radius: 50px;
+	  text-align: center;
+	  font-size: 30px;
+	  box-shadow: 2px 2px 3px #999;
+	  z-index: 100;
+	  margin: 5px;
+  }
+  
+  .instagram-icon{
+	cursor: pointer;
+	position: relative;
+	  bottom: 40%;
+	  right: 5%;
+	padding: 10px;
+	  background-color: #fff;
+	  color: #962fbf  ;
+	  border-radius: 50px;
+	  text-align: center;
+	  font-size: 30px;
+	  box-shadow: 2px 2px 3px #999;
+	  z-index: 100;
+	  margin: 5px;
+  }
+  
+  .email-icon{
+	cursor: pointer;
+	position: relative;
+	  bottom: 50%;
+	  right: 5%;
+	padding: 10px;
+	  background-color: #fffffff2;
+	  color: #c71610;
+	  border-radius: 50px;
+	  text-align: center;
+	  font-size: 30px;
+	  box-shadow: 2px 2px 3px #999;
+	  z-index: 100;
+	margin: 5px;
+  }
+  
+  .phone-icon{
+	cursor: pointer;
+	position: relative;
+	  bottom: 60%;
+	  right: 5%;
+	padding: 10px;
+	  background-color: #fffffff2;
+	  color: #1b96cf;
+	  border-radius: 50px;
+	  text-align: center;
+	  font-size: 30px;
+	  box-shadow: 2px 2px 3px #999;
+	  z-index: 100;
+	margin: 5px;
+  }
+
+  
+  /* Add animation (fade in the popup) */
+  @-webkit-keyframes fadeIn {
+	from {opacity: 0;} 
+	to {opacity: 1;}
+  }
+  
+  @keyframes fadeIn {
+	from {opacity: 0;}
+	to {opacity:1 ;}
+  }

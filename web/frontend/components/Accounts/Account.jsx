@@ -6,12 +6,10 @@ import {
   useIndexResourceState,
   Avatar,
   Badge,
-  PageActions
 } from "@shopify/polaris";
 import React, { useState, useEffect } from "react";
 import { useAuthenticatedFetch } from "../../hooks/useAuthenticatedFetch";
-import pageSkeletonExample from "../skeletons/pageSkeleton"
-import NewAccount from "./NewAccount"
+import NewAccount from "./newAccount"
 import { FaWhatsapp } from 'react-icons/fa';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';

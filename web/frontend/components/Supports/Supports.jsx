@@ -149,7 +149,7 @@ export default function Supports() {
                   value={data.Message}
                   onChange={(value) => handleTextFieldChange(value, "Message")}
                   placeholder="Leave your message"
-                  maxHeight="210px"
+                  multiline={5}
                   autoComplete="off"
                   requiredIndicator
                 />
