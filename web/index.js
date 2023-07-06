@@ -9,7 +9,7 @@ import productCreator from "./product-creator.js";
 import GDPRWebhookHandlers from "./gdpr.js";
 import mongoose from "mongoose";
 import AccountModel from "./Database/AccountSchema.js";
-import SupportModel from "./Database/SupportsSchemaa.js"
+import SupportModel from "./Database/SupportsSchemaa.js";
 
 const PORT = parseInt(
   process.env.BACKEND_PORT || process.env.PORT || "3000",
@@ -45,7 +45,6 @@ app.use(express.json());
 //--------------------------------------starting pont------
 
 app.post("/api/Account", async (req, res) => {
-
   const data = req.body;
   const session = res.locals.shopify.session;
   const shop = session.shop;
@@ -88,11 +87,6 @@ app.put("/api/Account/:id", async (req, res) => {
   }
 });
 
-
-
-
-
-
 app.get("/api/Account", async (req, res) => {
   const data = await AccountModel.find();
   try {
@@ -103,16 +97,14 @@ app.get("/api/Account", async (req, res) => {
 });
 
 app.delete("/api/delete", async (req, res) => {
-  const id = req.body
+  const id = req.body;
   const condition = { _id: { $in: id } };
   // console.log(id)
   // await AccountModel.findByIdAndDelete(id).exec()
-  await AccountModel.deleteMany(condition).exec()
+  await AccountModel.deleteMany(condition).exec();
 
-  res.send("delete")
-
-})
-
+  res.send("delete");
+});
 
 app.delete("/api/Select", async (req, res) => {
   const { ids } = req.body;
