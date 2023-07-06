@@ -102,6 +102,17 @@ app.get("/api/Account", async (req, res) => {
   }
 });
 
+app.delete("/api/delete", async (req, res) => {
+  const id = req.body
+  const condition = { _id: { $in: id } };
+  // console.log(id)
+  // await AccountModel.findByIdAndDelete(id).exec()
+  await AccountModel.deleteMany(condition).exec()
+
+  res.send("delete")
+
+})
+
 
 app.delete("/api/Select", async (req, res) => {
   const { ids } = req.body;
