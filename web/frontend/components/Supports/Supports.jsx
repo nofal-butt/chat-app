@@ -9,11 +9,30 @@ import {
 } from "@shopify/polaris";
 import { EmailMajor } from "@shopify/polaris-icons";
 import React from "react";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useAuthenticatedFetch } from "../../hooks/useAuthenticatedFetch";
 
 export default function Supports() {
   const fetch = useAuthenticatedFetch();
+
+  useEffect(() => {
+    fetch("/api/support", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        "Accept-Encoding": "gzip,deflate,compress",
+      },
+    })
+      // .then((res) => res.json(data))
+      .then((data) => {
+        console.log(data);
+        // setItems(data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
 
   const [data, setData] = useState({
     StoreURL: "",
@@ -35,37 +54,21 @@ export default function Supports() {
 
 
   const handleSubmit = () => {
-
-    console.log(data);
-    // setRedirectToOther(true);
-    // fetch("/api/Account", {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //     Accept: "application/json",
-    //     "Accept-Encoding": "gzip,deflate,compress",
-    //   },
-    //   body: JSON.stringify(data),
-    // })
-    //   .then(() => {
-    //     toast.success('Successfully Account Create', {
-    //       // className: 'custom-toast',
-    //       // style: {
-    //       //   backgroundColor: 'purple',
-    //       //   color: 'white',
-    //       //   // Add any other custom styles you want
-    //       // },
-    //       position: toast.POSITION.BOTTOM_CENTER,
-    //       autoClose: 3000, // Duration in milliseconds
-    //       hideProgressBar: false,
-    //     });
-    //     console.log("Successfull data send");
-    //     setShowEmptyState(true);
-    //   })
-    //   .catch((err) => {
-    //     console.log(err, "error");
-    //   });
-
+    fetch("/api/Account/support", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        "Accept-Encoding": "gzip,deflate,compress",
+      },
+      body: JSON.stringify(data),
+    })
+      .then(() => {
+        console.log("Successfull data send");
+      })
+      .catch((err) => {
+        console.log(err, "error");
+      });
 
   };
 

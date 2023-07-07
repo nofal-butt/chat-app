@@ -4,6 +4,7 @@ import { useState, useCallback, useEffect } from "react";
 import { useAuthenticatedFetch } from "../../hooks/useAuthenticatedFetch";
 import EmptyStateExample from "../EmptyStateExample";
 import SkeletonExample from "../Skeleton";
+import { FaWhatsapp } from 'react-icons/fa';
 import "./Style.css";
 
 export default function SearchBar() {
@@ -157,11 +158,11 @@ export default function SearchBar() {
                             className="LISTBOXCLASS"
                             onClick={() => selectedOption(option)}
                           >
-                            <Avatar
+                            {option?.url ? (<Avatar
                               size="medium"
                               name={option?.name}
                               source={option?.url}
-                            />
+                            />) : (<FaWhatsapp className="whatsapp-icon" size={40} color="#25D366" />)}
                             Account( Name: {option?.name} - Number:{" "}
                             {option?.phone} - Title: {option?.title})
                           </div>
@@ -183,11 +184,11 @@ export default function SearchBar() {
                     <div className="text">
                       <div className="chackbox"></div>
                       <div className="img">
-                        <Avatar
+                        {option?.url ? (<Avatar
                           size="medium"
                           name={option?.name}
                           source={option?.url}
-                        />
+                        />) : (<FaWhatsapp className="whatsapp-icon" size={40} color="#25D366" />)}
                       </div>
 
                       <div className="text_2">

@@ -10,6 +10,7 @@ import GDPRWebhookHandlers from "./gdpr.js";
 import mongoose from "mongoose";
 import AccountModel from "./Database/AccountSchema.js";
 import SupportModel from "./Database/SupportsSchemaa.js"
+import { addSelectedAccount, addMerchantData, Support } from "./helper/addSelectedAccount.js"
 
 const PORT = parseInt(
   process.env.BACKEND_PORT || process.env.PORT || "3000",
@@ -50,16 +51,40 @@ app.post("/api/Account", async (req, res) => {
   const session = res.locals.shopify.session;
   const shop = session.shop;
   data["shop"] = shop;
-
-  await AccountModel.findOneAndUpdate({ _id: data?._id }, { selected: true });
-  // await AccountModel.findOne({ _id: data?._id });
-  const user = new AccountModel(data);
   try {
+    await AccountModel.findOneAndUpdate({ _id: data?._id }, { selected: true });
+
+    // await AccountModel.findOne({ _id: data?._id });
+    const user = new AccountModel(data);
+    console.log(user, "user")
+
+    if (data.selected) {
+      const allData = await AccountModel.find({ selected: true }); // Fetch all selected data from the database
+
+      const metavalue = {
+        namespace: "whatsApp",
+        key: "Mobile",
+        value: JSON.stringify(allData),
+        type: 'json'
+      }
+      const output = await addSelectedAccount(session, metavalue)
+      console.log(output)
+      if (output) {
+        res.status(200).send({ output })
+      } else {
+        res.status(500).send({ output, error: true, message: "ADDING ISSUE IN META FIELD" })
+      }
+    }
+
+
     await user.save();
     res.status(200).send({ message: "Data Save Successfully" });
+
   } catch (err) {
     console.log(err);
   }
+
+
 });
 
 app.put("/api/Account/:id", async (req, res) => {
@@ -88,11 +113,6 @@ app.put("/api/Account/:id", async (req, res) => {
   }
 });
 
-
-
-
-
-
 app.get("/api/Account", async (req, res) => {
   const data = await AccountModel.find();
   try {
@@ -112,8 +132,6 @@ app.delete("/api/delete", async (req, res) => {
   res.send("delete")
 
 })
-
-
 app.delete("/api/Select", async (req, res) => {
   const { ids } = req.body;
   console.log(ids, "THERE IS AN ID");
@@ -122,6 +140,59 @@ app.delete("/api/Select", async (req, res) => {
   await AccountModel.updateMany(condition, { selected: false }).exec();
   res.send("delete");
 });
+
+//--------------------supports api -----------
+app.post("/api/Account/support", async (req, res) => {
+
+  const data = req.body;
+  console.log(data)
+  const session = res.locals.shopify.session;
+  try {
+
+    const user = new SupportModel(data);
+    console.log(user, "user")
+    await user.save();
+    const output = await Support(session)
+    console.log(output)
+    if (output) {
+      res.status(200).send({ output })
+    } else {
+      res.status(500).send({ output, error: true, message: "ADDING ISSUE IN META FIELD" })
+    }
+
+    res.status(200).send({ message: "Data Save Successfully" });
+
+  } catch (err) {
+    console.log(err);
+  }
+
+});
+
+
+app.get("/api/support", async (req, res) => {
+  const session = res.locals.shopify.session;
+
+  try {
+    const support = await Support(session)
+    console.log(support, "support")
+    console.log(support.email)
+    console.log(support.domain)
+    console.log(support.shop_owner)
+
+
+    if (support) {
+      res.status(200).send({ support })
+    } else {
+      res.status(500).send({ support, error: true, message: "ADDING ISSUE IN META FIELD" })
+    }
+    // const data = req.body
+
+    // res.send({ support });
+  } catch (err) {
+    res.status(400).json(console.log("Error"));
+  }
+});
+
 
 //--------------------------------------------------------------------------------------------------------------------------------------
 app.get("/api/products/count", async (_req, res) => {

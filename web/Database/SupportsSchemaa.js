@@ -24,5 +24,5 @@ const Support = mongoose.Schema({
 
 })
 
-const SupportModel = mongoose.model("Help", Support)
+const SupportModel = mongoose.model("Helper", Support)
 export default SupportModel
