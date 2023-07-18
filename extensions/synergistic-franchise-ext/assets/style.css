@@ -1,150 +1,145 @@
-#myElement,
-#myElements,
-#myElementss,
-#myElementsss  {
-	display: none;
+.whatsapp-icon,
+.cross-icon {
+  bottom: 4rem;
+  width: 6rem;
+  height: 6rem;
+  border-radius: 50%;
+  text-align: center;
+  cursor: pointer;
+  z-index: 9999;
+  font-size:3.2rem;
 }
-  
-/* Popup container - can be anything you want */
-.popup {
-	cursor: pointer;
-	position: absolute;
-	  bottom: 10%;
-	  right: 4.5%;
-	  background-color: #0E91C6;
-	  color: #fff;
-	  border-radius: 50px;
-	  text-align: center;
-	  font-size: 30px;
-	  box-shadow: 2px 2px 3px #999;
-	  z-index: 100;
-	  padding-left: 12px;
-	  padding-right: 12px;
-  }
-  
-  /* The actual popup */
-  .popup .popuptext {
-	visibility: hidden;
-	width: 60px;
-	color: black;
-	text-align: center;
-	border-radius: 6px; 
-	padding: 0;
-	position: absolute;
-	z-index: 1;
-	bottom: 125%;
-	left: 50%;
-	margin-left: -30px;
-	display: flex;
-	flex-direction: column;
-	}
-  
-  /* Popup arrow */
-  .popup .popuptext::after {
-	position: absolute;
-	top: 100%;
-	left: 50%;
-	margin-left: -5px;
-	border-width: 5px;
-	border-style: solid;
-	border-color: #555 transparent transparent transparent;
-  }
-	
-  /* Toggle this class - hide and show the popup */
-  .popup .show {
-	visibility: visible;
-	-webkit-animation: fadeIn 1s;
-	animation: fadeIn 1s;
-  }
-  
-  .whatsapp-icon{
-	cursor: pointer;
-	position: relative;
-	  bottom: 20%;
-	  right: 5%;
-	padding: 10px;
-	  background-color: #fff;
-	  color: #25d366;
-	  border-radius: 50px;
-	  text-align: center;
-	  font-size: 30px;
-	  box-shadow: 2px 2px 3px #999;
-	  z-index: 100;
-	  margin: 5px;
-  }
-  
-  .messanger-icon{
-	cursor: pointer;
-	position: relative;
-	  bottom: 30%;
-	  right: 5%;
-	padding: 10px;
-	  background-color: #fff;
-	  color: #0099FF;
-	  border-radius: 50px;
-	  text-align: center;
-	  font-size: 30px;
-	  box-shadow: 2px 2px 3px #999;
-	  z-index: 100;
-	  margin: 5px;
-  }
-  
-  .instagram-icon{
-	cursor: pointer;
-	position: relative;
-	  bottom: 40%;
-	  right: 5%;
-	padding: 10px;
-	  background-color: #fff;
-	  color: #962fbf  ;
-	  border-radius: 50px;
-	  text-align: center;
-	  font-size: 30px;
-	  box-shadow: 2px 2px 3px #999;
-	  z-index: 100;
-	  margin: 5px;
-  }
-  
-  .email-icon{
-	cursor: pointer;
-	position: relative;
-	  bottom: 50%;
-	  right: 5%;
-	padding: 10px;
-	  background-color: #fffffff2;
-	  color: #c71610;
-	  border-radius: 50px;
-	  text-align: center;
-	  font-size: 30px;
-	  box-shadow: 2px 2px 3px #999;
-	  z-index: 100;
-	margin: 5px;
-  }
-  
-  .phone-icon{
-	cursor: pointer;
-	position: relative;
-	  bottom: 60%;
-	  right: 5%;
-	padding: 10px;
-	  background-color: #fffffff2;
-	  color: #1b96cf;
-	  border-radius: 50px;
-	  text-align: center;
-	  font-size: 30px;
-	  box-shadow: 2px 2px 3px #999;
-	  z-index: 100;
-	margin: 5px;
-  }
 
-  
-  /* Add animation (fade in the popup) */
-  @-webkit-keyframes fadeIn {
-	from {opacity: 0;} 
-	to {opacity: 1;}
-  }
-  
-  @keyframes fadeIn {
-	from {opacity: 0;}
-	to {opacity:1 ;}
-  }
+.help {
+  position: fixed;
+  bottom: 5rem;
+  right: 13rem;
+  width: 155px;
+  background-color: #f4f6f8;
+  color: #43474e;
+  font-size: 12px;
+  letter-spacing: -0.03em;
+  border-radius: 5px;
+  line-height: 1.5;
+  padding: 8px 12px;
+  z-index: 9999;
+  opacity: 1;
+}
+
+.popup-menu {
+  bottom: 11rem;
+  opacity: 1;
+  visibility: visible;
+  font-family: Arial, Helvetica, sans-serif;
+  max-width: calc(100% - 50px);
+  overflow: hidden;
+  position: fixed;
+  width: 351px;
+  will-change: transform, visibility, opacity;
+  z-index: 999999998;
+  display: none;
+  border-radius: 5px;
+}
+
+.headerr {
+  /* background: #2db742; */
+  color: #d9ebc6;
+  padding: 15px 43px 17px 74px;
+  position: relative;
+  display: flex;
+}
+
+.bottom-header {
+  text-align: left;
+}
+
+.bottom-header_1 {
+  color: #030d22;
+  background: #f5f7f9;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 5px 0px 0px 12px;
+}
+
+.wa_avatar {
+  border-radius: 50%;
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  left: 12px;
+  overflow: hidden;
+  position: absolute;
+  top: 12px;
+  padding: 5px;
+    border: 1px solid gray;
+    box-shadow: 1px 1px 3px 1px grey;
+    border-radius: 5px;
+}
+
+.bottom-header_2 {
+  visibility: visible;
+  opacity: 1;
+  background: #f5f7f9;
+  padding: 2px;
+  position: relative;
+  text-decoration: none;
+  width: 1000px;
+  display: table-cell;
+  height: 48px;
+  min-height: 48px;
+  vertical-align: middle;
+  padding: 10px;
+}
+
+/* .bottom-header_3 {
+  border-left: 2px solid #2db742;
+  padding: 1rem;
+  cursor: pointer;
+} */
+
+.icon {
+  left: 22px;
+  position: absolute;
+  font-size: 40px;
+}
+
+.header_1 {
+  color: #fff;
+  line-height: 24px;
+  min-height: 24px;
+  padding-bottom: 3;
+  padding-top: 2px;
+}
+
+.header_2 {
+  color: rgb(217, 235, 198);
+  font-size: 12px;
+  line-height: 20px;
+  min-height: 20px;
+  padding-top: 4px;
+}
+
+.data-item {
+  background-color: #e2e6eb;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  border-left: 2px solid #2db742;
+  font-size: 14px;
+  cursor: pointer;
+  margin: 5px;
+  margin-bottom: 6px;
+  border-radius: 3px;
+}
+
+.data-item img {
+  border-radius: 50px;
+  width: 44px;
+  height: 44px;
+  margin-right: 10px;
+  margin-left: 10px;
+}
+
+.content-wrapper {
+  flex: 1;
+}
+

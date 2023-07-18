@@ -25,29 +25,12 @@ export default function SearchBar() {
       .then((res) => res.json())
       .then((data) => {
         setOptions(data);
+        setSelectedAccount(data.filter((option) => option.selected));
         setIsLoading(false);
+        console.log(data);
       })
       .catch((err) => {
         console.log(err);
-      });
-  }, []);
-
-  useEffect(() => {
-    fetch(`/api/Account`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        "Accept-Encoding": "gzip,deflate,compress",
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        setSelectedAccount(data.filter((option) => option.selected));
-        setIsLoading(false);
-      })
-      .catch((err) => {
-        console.log(err, "error");
       });
   }, []);
 
@@ -75,7 +58,6 @@ export default function SearchBar() {
 
   const selectedOption = (option) => {
     const updatedOption = { ...option, selected: true };
-    console.log("updatedOption", updatedOption);
 
     fetch(`/api/Account`, {
       method: "POST",
@@ -87,7 +69,7 @@ export default function SearchBar() {
       body: JSON.stringify(updatedOption),
     })
       .then((res) => {
-        console.log("Data selected successfully");
+        console.log(res, "Data selected successfully");
         if (updatedOption.selected) {
           setSelectedAccount((prevSelectedAccount) => [
             ...prevSelectedAccount,
@@ -100,8 +82,10 @@ export default function SearchBar() {
       });
   };
 
-  const handleDelete = (_id) => {
-    console.log(_id);
+  const handleDelete = (option) => {
+    console.log(option);
+    const updatedOption = { ...option, selected: false };
+
     fetch("/api/Select", {
       method: "DELETE",
       headers: {
@@ -110,12 +94,16 @@ export default function SearchBar() {
         "Accept-Encoding": "gzip,deflate,compress",
       },
 
-      body: JSON.stringify({ ids: [_id] }),
+      body: JSON.stringify(updatedOption),
     })
-      .then(() => {
-        setSelectedAccount((prevSelectedAccount) =>
-          prevSelectedAccount.filter((option) => option._id !== _id)
-        );
+      .then((res) => {
+        console.log(res, "Data UnSelected Successfully");
+        if (updatedOption.selected) {
+          setSelectedAccount((prevSelectedAccount) => [
+            ...prevSelectedAccount,
+            updatedOption,
+          ]);
+        }
       })
       .catch((err) => {
         console.log(err, "error");
@@ -144,32 +132,32 @@ export default function SearchBar() {
             <div className="Listbox">
               {options?.length > 0
                 ? options?.map((option) => {
-                  return (
-                    <div>
-                      <Listbox>
-                        <Listbox.Option
-                          key={option?._id}
-                          value={option?.value}
-                          selected={selectedAccount === selectedAccount?._id}
-                          accessibilityLabel={option?.name}
-                        >
-                          <div
-                            className="LISTBOXCLASS"
-                            onClick={() => selectedOption(option)}
+                    return (
+                      <div>
+                        <Listbox>
+                          <Listbox.Option
+                            key={option?._id}
+                            value={option?.value}
+                            selected={selectedAccount === selectedAccount?._id}
+                            accessibilityLabel={option?.name}
                           >
-                            <Avatar
-                              size="medium"
-                              name={option?.name}
-                              source={option?.url}
-                            />
-                            Account( Name: {option?.name} - Number:{" "}
-                            {option?.phone} - Title: {option?.title})
-                          </div>
-                        </Listbox.Option>
-                      </Listbox>
-                    </div>
-                  );
-                })
+                            <div
+                              className="LISTBOXCLASS"
+                              onClick={() => selectedOption(option)}
+                            >
+                              <Avatar
+                                size="medium"
+                                name={option?.name}
+                                source={option?.url}
+                              />
+                              Account( Name: {option?.name} - Number:{" "}
+                              {option?.phone} - Title: {option?.title})
+                            </div>
+                          </Listbox.Option>
+                        </Listbox>
+                      </div>
+                    );
+                  })
                 : null}
             </div>
           </Combobox>
@@ -195,12 +183,11 @@ export default function SearchBar() {
                         <div>{option?.title}</div>
                       </div>
                       <div className="Button">
-                        <Button onClick={() => handleDelete(option._id)}>
+                        <Button onClick={() => handleDelete(option)}>
                           Delete Account
                         </Button>
                       </div>
                     </div>
-
                   </div>
                 ))}
               </div>

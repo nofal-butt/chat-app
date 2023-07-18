@@ -1,152 +1,174 @@
 <head>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="{{ 'style.css' | asset_url }}">
+  <script src="{{ 'setting.js' | asset_url }}"></script>
 
-<script>
+<script>{{data}}</script>
 
-document.addEventListener('DOMContentLoaded', function() {
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      let metafields = {{ shop.metafields.whatsApp.Mobile }}
 
-  let metafields = {{ shop.metafields.chatapp.phone }};
-  console.log(metafields)
+      if (metafields) {
+        const data = metafields.map(item => {
+          const { _id, name, phone, title, message, notice, url, toggle, shop } = item;
+          return {
+            id: _id,
+            name: name,
+            phone: phone,
+            title: title,
+            message: message,
+            notice: notice,
+            url: url,
+            toggle: toggle,
+            shop: shop
+          };
+        });
+        
+        data.forEach(item => {
+          const container = document.getElementById("dataContainer");
 
-  const toggles = Object.values(metafields).reduce((arr, value) => {
-    arr.push(value)
-      return arr;
-  }, []);
-  console.log(toggles);
+          const div = document.createElement("div");
+          div.classList.add("data-item");
 
-  console.log(toggles[1].messangerToggle)
+          const image = document.createElement("img");
+          image.src = `${item.url}`;
 
+          const contentWrapper = document.createElement("div");
+          contentWrapper.classList.add("content-wrapper");
 
-  if(toggles[0].numberToggle == true){
-    const element = document.getElementById("myElement");
-    element.style.display = "block";
-  }
-  if(toggles[1].messangerToggle == true){
-    const elements = document.getElementById("myElements");
-    elements.style.display = "block";
-  }
-  if(toggles[2].instagramToggle == true){
-    const elementss = document.getElementById("myElementss");
-    elementss.style.display = "block";
-  }
-  if(toggles[3].emailToggle == true){
-    const elementsss = document.getElementById("myElementsss");
-    elementsss.style.display = "block";
-  }
+          const paragraph = document.createElement("p");
+          paragraph.innerHTML = `${item.name}<br>${item.title}`;
 
+          div.appendChild(image);
+          div.appendChild(contentWrapper);
+          contentWrapper.appendChild(paragraph);
 
+          container.appendChild(div);
+        });
 
-  <!-- whatsapp -->
-  const whatsappLink = `https://wa.me/${metafields.Phone.phone}`;
+      } else {
+        console("Data is not Selected")
+      }
 
-  const openWhatsApp = () => {
-    window.open(whatsappLink, '_blank');
-  };
+      document
+        .getElementById("whatsappIcon")
+        .addEventListener("click", function () {
+          document.getElementById("whatsappIcon").style.display = "none";
+          document.getElementById("NeedHelp").style.display = "none";
+          document.getElementById("crossIcon").style.display = "block";
+          document.getElementById("popupMenu").style.display = "block";
+        });
 
-  const whatsappButton = document.getElementById('whatsappLink');
-  whatsappButton.addEventListener('click', openWhatsApp);
+      document
+        .getElementById("crossIcon")
+        .addEventListener("click", function () {
+          document.getElementById("whatsappIcon").style.display = "block";
+          document.getElementById("NeedHelp").style.display = "block";
+          document.getElementById("crossIcon").style.display = "none";
+          document.getElementById("popupMenu").style.display = "none";
+        });
 
+      document.getElementById("dataContainer").addEventListener("click", function() {
+        const phoneNumber = '{{ shop.metafields.whatsApp.Mobile.phone }}';
+        const whatsappWebUrl = `https://wa.me/${phoneNumber}`;
+        window.open(whatsappWebUrl);
+      });
 
-  <!-- messanger -->
-  const messangerLink = `https://m.me/{metafields.Messanger.messanger}`;
+    });
 
-  const openMessanger = () => {
-    window.open(messangerLink, '_blank');
-  };
-
-  const messangerButton = document.getElementById('messangerLink');
-  messangerButton.addEventListener('click', openMessanger);
-
-
-  <!-- instagram -->
-  const instagramLink = `https://www.instagram.com/${metafields.Instagram.instagram}`;
-
-  const openInstagram = () => {
-    window.open(instagramLink, '_blank');
-  };
-
-  const instagramButton = document.getElementById('instagramLink');
-  instagramButton.addEventListener('click', openInstagram);
-
-
-  <!-- email -->
-  const emailLink = `mailto:${metafields.Email.email}`;
-
-  const openEmail = () => {
-    window.open(emailLink, '_blank');
-  };
-
-  const emailButton = document.getElementById('emailLink');
-  emailButton.addEventListener('click', openEmail);
-
-
-  <!-- phone -->
-  const phoneLink = `tel:${metafields.Phone.phone}`;
-
-  const openPhone = () => {
-    window.open(phoneLink, '_blank');
-  };
-
-  const phoneButton = document.getElementById('phoneLink');
-  phoneButton.addEventListener('click', openPhone);
-
-});
-
-  function myFunction() {
-    var popup = document.getElementById("myPopup");
-    popup.classList.toggle("show");
-  }
-
-</script>
-
-
- <div class="popup" onclick="myFunction()">
-    <i class="fa-solid fa-comment-dots my-float">
-  
-      <span class="popuptext" id="myPopup">
-     <div id="myElement">
-        <a id="whatsappLink" target="_blank">
-          <i class="fab fa-whatsapp whatsapp-icon float"></i>
-        </a>
-           </div>
-      <div id="myElements">
-        <a id="messangerLink" target="_blank">
-          <i class="fab fa-facebook-messenger messanger-icon"></i>
-        </a>
-      </div>
-      <div id="myElementss">
-        <a id="instagramLink" target="_blank">
-          <i class="fab fa-instagram instagram-icon"></i>
-        </a>
-        </div>
-      <div id="myElementsss">
-        <a id="emailLink" target="_blank">
-          <i class="far fa-envelope email-icon float"></i>
-        </a>
-      </div>
-      <div id="myElement">
-     
-        <a id="phoneLink" target="_blank">
-          <i class="fas fa-phone phone-icon"></i>
-        </a>
-
-         </div>
-      
-      </span>
-    
-    </i>
-  </div>
-
-
-
+    function myFunction() {
+      var popup = document.getElementById("myPopup");
+      popup.classList.toggle("show");
+    }  
+  </script>
 
 </head>
+
+<body>
+{% assign data1 = data %} {% for item in data1 %} 
+<p>Desktop URL: {{ item.desktopURL }}</p>
+ <p>Mobile URL: {{ item.mobileURL }}</p>
+  <p>Target: {{ item.target }}</p>
+   {% endfor %}
+    {{ 'setting.js' | asset_url | script_tag }}
+
+<div>
+
+{% assign position = block.settings.position | downcase %}
+{% if position == 'right' %}
+  <div class="whatsapp-icon" id="whatsappIcon" style="background-color: {{ block.settings.background }}; position: fixed; right: {{ block.settings.right_space }}rem;">
+{% else %}
+  <div class="whatsapp-icon" id="whatsappIcon" style="background-color: {{ block.settings.background }}; position: fixed; left: {{ block.settings.left_space }}rem;">
+{% endif %}
+  <i class="fa-brands fa-whatsapp" style="color:{{ block.settings.colour }}"></i>
+  </div>
+</div>
+
+{% assign position = block.settings.position | downcase %}
+{% if position == 'right' %}
+  <div class="cross-icon" id="crossIcon" style="display: none; background-color: {{ block.settings.background }}; position: fixed; right: {{ block.settings.right_space }}rem;">
+{% else %}
+  <div class="cross-icon" id="crossIcon" style="display: none; background-color: {{ block.settings.background }}; position: fixed; left: {{ block.settings.left_space }}rem;">
+{% endif %}
+  <i class="fa-solid fa-xmark" style="color:{{ block.settings.colour }}"></i>
+  </div>
+</div>
+
+
+<div class="help" id="NeedHelp">
+  {{ block.settings.widget_label_text }}
+</div>
+
+{% assign position = block.settings.position | downcase %}
+
+{% if position == 'right' %}
+  <div class="popup-menu" id="popupMenu" style="right: {{ block.settings.right_space }}rem;">
+{% else %}
+  <div class="popup-menu" id="popupMenu" style="left: {{ block.settings.left_space }}rem;">
+{% endif %}
+  <div class="headerr" style="background-color: {{ block.settings.background }}">
+    <div class="icon">
+      <i class="fa-brands fa-whatsapp"></i>
+    </div>
+    <div>
+      <div class="header_1">
+        {{ block.settings.widget_text }}
+      </div>
+      <div class="header_2">
+        {{ block.settings.description }}
+      </div>
+    </div>
+  </div>
+
+  <div class="bottom-header">
+    <div class="bottom-header_1">
+      {{ block.settings.response_time_text }}
+    </div>
+    <div class="bottom-header_2">
+      <div class="bottom-header_3" id="dataContainer"></div>
+    </div>
+  </div>
+</div>
+
+
+</div>
+</body>
 
 {% schema %}
   {
     "name": "Chat App",
     "target": "head",
-    "settings": [  ]
+    "settings": [ 
+      { "type": "color", "id": "colour", "label": "Text Colour", "default": "#ffffff" },
+      { "type": "color", "id": "background", "label": "Background Colour", "default": "#008000" },
+      { "type": "text", "id": "widget_text", "label": "Widget Text", "default": "Start a Conversation" },
+      { "type": "text", "id": "widget_label_text", "label": "Widget Label Text", "default": "Need Help? Chat with us" },
+      { "type": "textarea", "id": "description", "label": "Description", "default": "Hi! Click one of our member below to chat on WhatsApp" },
+      { "type": "textarea", "id": "response_time_text", "label": "Response Time Text", "default": "Hi! Click one of our member below to chat on WhatsApp" },
+      { "type": "select", "id": "position", "label": "Position",  "options": [{"value": "right", "label": "Right"}, {"value": "left","label": "Left"}], "default":"right" },
+      { "type": "range", "id": "right_space", "min": 1, "max": 100, "step": 1, "unit": "rem", "label": "Right Distance", "default": 5},
+      { "type": "range", "id": "left_space", "min": 1, "max": 100, "step": 1, "unit": "rem", "label": "Left Distance", "default": 5}
+    ]
   }
 {% endschema %}

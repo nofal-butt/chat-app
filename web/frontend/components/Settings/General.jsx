@@ -1,8 +1,36 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { ButtonGroup, Button, Collapsible } from "@shopify/polaris";
 import { useState, useCallback } from "react";
+import { useAuthenticatedFetch } from "../../hooks/useAuthenticatedFetch";
+import axios from "axios";
 
 function General() {
+  const fetch = useAuthenticatedFetch();
+  const [isActive, setIsActive] = useState(true);
+  const [active, setActive] = useState("Activate");
+
+  useEffect(() => {
+    axios
+      .get("/api/setting/general")
+      .then((res) => {
+        const data = res.data.data;
+        console.log(data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+
+  const handleToggle = () => {
+    setIsActive(!isActive);
+    setActive(isActive ? "Deactivate" : "Activate");
+  };
+
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => {
+    setOpen(!open);
+  };
+
   const [desktopRecommended, setDesktopRecommended] = useState(true);
   const [desktopWhatsAppURL, setDesktopWhatsAppURL] = useState(
     "https://api.whatsapp.com"
@@ -23,55 +51,41 @@ function General() {
     setMobileRecommended(url === "https://api.whatsapp.com");
   };
 
-  const [openURL, setOpenURL] = useState(true);
-  const [openWhatsAppURL, setopenWhatsAppURL] = useState(
-    "Open URL in current tab"
-  );
-
-  const handleTabButton = (url) => {
-    setopenWhatsAppURL(url);
-    setOpenURL(url === "Open URL in current tab");
-  };
-
-  const [open, setOpen] = useState(false);
-  const [text, setText] = useState("Google Analytics is disabled");
-  const handleTabOpen = () => {
-    if (open) {
-      setText("Google Analytics is disabled");
-    } else {
-      setText(
-        "Gain insights of WhatsApp tracking in Google Analytics > Behavior > Events"
-      );
-    }
-    setOpen(!open);
-  };
-
   const [openButton, setOpenButton] = useState(false);
-  const [texts, setTexts] = useState(
-    "Please enable this feature if your website is using Google Analytics 4"
-  );
+
   const handleTabOpens = () => {
-    if (openButton) {
-      setTexts(
-        "Please enable this feature if your website is using Google Analytics 4"
-      );
-    }
     setOpenButton(!openButton);
+  };
+
+  const handleSaveChanges = () => {
+    const data = {
+      target: isActive ? "_blank" : "",
+      desktopURL: desktopRecommended
+        ? "https://api.whatsapp.com"
+        : "https://web.whatsapp.com",
+      mobileURL: mobileRecommended
+        ? "https://api.whatsapp.com"
+        : "whatsapp://send",
+    };
+
+    axios
+      .post("/api/setting/general", data)
+      .then((res) => {
+        console.log("Setting Saved Successfully:", res.data);
+      })
+      .catch((error) => {
+        console.error("Error saving data:", error);
+      });
   };
 
   return (
     <div style={{ boxSizing: "border-box" }}>
-      <div
-        style={{
-          display: "flex",
-          fontSize: "14px",
-        }}
-      >
+      <div style={{ display: "flex", fontSize: "14px" }}>
         <div style={{ padding: "2rem", width: "30%" }}>Google Analytics</div>
         <div style={{ margin: "1rem", width: "70%" }}>
           <div>
             <Button
-              onClick={handleTabOpen}
+              onClick={handleOpen}
               ariaExpanded={open}
               ariaControls="basic-collapsible"
               pressed={open}
@@ -80,7 +94,14 @@ function General() {
             </Button>
           </div>
           <div style={{ marginTop: "1rem", marginBottom: "1rem" }}>
-            <p>{text}</p>
+            {open ? (
+              <div>
+                Gain insights of WhatsApp tracking in Google Analytics &gt;
+                Behavior &gt; Events
+              </div>
+            ) : (
+              <div>Google Analytics is disabled</div>
+            )}
           </div>
           <Collapsible
             open={open}
@@ -97,67 +118,61 @@ function General() {
               {openButton ? "Deactivate" : "Activate"}
             </Button>
             <div style={{ marginTop: "1rem", marginBottom: "1rem" }}>
-              <p>{texts}</p>
+              <div>
+                Please enable this feature if your website is using Google
+                Analytics 4
+              </div>
             </div>
           </Collapsible>
         </div>
       </div>
 
-      <div
-        style={{
-          display: "flex",
-          fontSize: "14px",
-        }}
-      >
+      <div style={{ display: "flex", fontSize: "14px" }}>
         <div style={{ padding: "2rem", width: "30%" }}>Open WhatsApp URL</div>
         <div style={{ padding: "1rem", width: "70%" }}>
           <ButtonGroup segmented>
-            <Button
-              pressed={openURL === true}
-              onClick={() => handleTabButton("Open URL in current tab")}
-            >
-              Deactivate
-            </Button>
-            <Button
-              pressed={openURL === false}
-              onClick={() => handleTabButton("Open URL in new tab")}
-            >
-              Activate
+            <Button onClick={handleToggle} pressed={isActive}>
+              {active}
             </Button>
           </ButtonGroup>
-          <div style={{ marginTop: "1rem" }}>{openWhatsAppURL}</div>
+          <div style={{ marginTop: "1rem" }}>
+            {isActive ? (
+              <div>Open URL in current tab</div>
+            ) : (
+              <div>Open URL in new tab</div>
+            )}
+          </div>
         </div>
       </div>
 
-      <div
-        style={{
-          display: "flex",
-          fontSize: "14px",
-        }}
-      >
+      <div style={{ display: "flex", fontSize: "14px" }}>
         <div style={{ padding: "2rem", width: "30%" }}>URL for Desktop</div>
         <div style={{ padding: "1rem", width: "70%" }}>
           <ButtonGroup segmented>
             <Button
-              pressed={desktopRecommended === true}
               onClick={() => handleDesktopButton("https://api.whatsapp.com")}
+              pressed={desktopRecommended}
             >
               API
             </Button>
             <Button
-              pressed={desktopRecommended === false}
               onClick={() => handleDesktopButton("https://web.whatsapp.com")}
+              pressed={!desktopRecommended}
             >
               WEB
             </Button>
           </ButtonGroup>
           <div style={{ marginTop: "1rem" }}>
             <span>
-              Open WhatsApp URL as &nbsp;
-              <a href={desktopWhatsAppURL} target="_blank">
+              Open WhatsApp URL as
+              <a
+                href={desktopWhatsAppURL}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 {desktopWhatsAppURL}
               </a>
-              &nbsp;{desktopRecommended && <span>(Recommended)</span>}
+              {desktopRecommended && <span>(Recommended)</span>}
             </span>
           </div>
         </div>
@@ -173,13 +188,13 @@ function General() {
         <div style={{ padding: "1rem", width: "70%" }}>
           <ButtonGroup segmented>
             <Button
-              pressed={mobileRecommended === true}
+              pressed={mobileRecommended}
               onClick={() => handleMobileButton("https://api.whatsapp.com")}
             >
               API
             </Button>
             <Button
-              pressed={mobileRecommended === false}
+              pressed={!mobileRecommended}
               onClick={() => handleMobileButton("whatsapp://send")}
             >
               Protocol
@@ -197,7 +212,9 @@ function General() {
         </div>
       </div>
       <div style={{ margin: "20px" }}>
-        <Button primary>Save Changes</Button>
+        <Button primary onClick={handleSaveChanges}>
+          Save Changes
+        </Button>
       </div>
     </div>
   );

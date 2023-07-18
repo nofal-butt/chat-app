@@ -9,7 +9,8 @@ import productCreator from "./product-creator.js";
 import GDPRWebhookHandlers from "./gdpr.js";
 import mongoose from "mongoose";
 import AccountModel from "./Database/AccountSchema.js";
-import SupportModel from "./Database/SupportsSchemaa.js";
+import { addSelectedAccount } from "./helpers/addSelectedAccount.js";
+import SettingModel from "./Database/Gen-Setting.js";
 
 const PORT = parseInt(
   process.env.BACKEND_PORT || process.env.PORT || "3000",
@@ -36,30 +37,42 @@ app.post(
   shopify.processWebhooks({ webhookHandlers: GDPRWebhookHandlers })
 );
 
-// If you are adding routes outside of the /api path, remember to
-// also add a proxy rule for them in web/frontend/vite.config.js
-
-app.use("/api/*", shopify.validateAuthenticatedSession());
-
 app.use(express.json());
-//--------------------------------------starting pont------
 
-app.post("/api/Account", async (req, res) => {
+app.post("/api/setting/general", async (req, res) => {
   const data = req.body;
-  const session = res.locals.shopify.session;
-  const shop = session.shop;
-  data["shop"] = shop;
-
-  await AccountModel.findOneAndUpdate({ _id: data?._id }, { selected: true });
-  // await AccountModel.findOne({ _id: data?._id });
-  const user = new AccountModel(data);
+  // const session = res.locals.shopify.session;
+  // const shop = session.shop;
+  // data["shop"] = shop;
   try {
-    await user.save();
-    res.status(200).send({ message: "Data Save Successfully" });
+    if (!data) {
+      const user = new SettingModel(data);
+      await user.save();
+      res.status(200).send({ message: "Settings Saved Successfully" });
+    } else {
+      await SettingModel.findOneAndUpdate({}, data, { upsert: true });
+      res.status(200).send({ message: "Settings Updated Successfully" });
+    }
   } catch (err) {
     console.log(err);
+    res.status(500).send({ message: "Internal server error" });
   }
 });
+
+app.get("/api/setting/general", async (req, res) => {
+  const data = await SettingModel.find();
+  try {
+    res.status(200).send({ data });
+  } catch (err) {
+    res.status(400).send({ message: "Error" });
+  }
+});
+
+// If you are adding routes outside of the /api path, remember to
+// also add a proxy rule for them in web/frontend/vite.config.js
+app.use("/api/*", shopify.validateAuthenticatedSession());
+
+//--------------------------------------starting pont------
 
 app.put("/api/Account/:id", async (req, res) => {
   const accountId = req.params.id;
@@ -87,6 +100,51 @@ app.put("/api/Account/:id", async (req, res) => {
   }
 });
 
+app.delete("/api/delete", async (req, res) => {
+  const id = req.body;
+  const condition = { _id: { $in: id } };
+  // await AccountModel.findByIdAndDelete(id).exec()
+  await AccountModel.deleteMany(condition).exec();
+
+  res.send("delete");
+});
+
+app.post("/api/Account", async (req, res) => {
+  const data = req.body;
+  const session = res.locals.shopify.session;
+  const shop = session.shop;
+  data["shop"] = shop;
+  try {
+    await AccountModel.findOneAndUpdate({ _id: data?._id }, { selected: true });
+    const user = new AccountModel(data);
+
+    if (data.selected) {
+      const allData = await AccountModel.find({ selected: true }); // Fetch all selected data from the database
+
+      const metavalue = {
+        namespace: "whatsApp",
+        key: "Mobile",
+        value: JSON.stringify(allData),
+        type: "json",
+      };
+      const output = await addSelectedAccount(session, metavalue);
+      console.log(output);
+      if (output) {
+        res.status(200).send({ output });
+      } else {
+        res
+          .status(500)
+          .send({ output, error: true, message: "ADDING ISSUE IN META FIELD" });
+      }
+    }
+
+    await user.save();
+    res.status(200).send({ message: "Data Save Successfully" });
+  } catch (err) {
+    console.log(err);
+  }
+});
+
 app.get("/api/Account", async (req, res) => {
   const data = await AccountModel.find();
   try {
@@ -96,26 +154,45 @@ app.get("/api/Account", async (req, res) => {
   }
 });
 
-app.delete("/api/delete", async (req, res) => {
-  const id = req.body;
-  const condition = { _id: { $in: id } };
-  // console.log(id)
-  // await AccountModel.findByIdAndDelete(id).exec()
-  await AccountModel.deleteMany(condition).exec();
-
-  res.send("delete");
-});
-
 app.delete("/api/Select", async (req, res) => {
-  const { ids } = req.body;
-  console.log(ids, "THERE IS AN ID");
-  const condition = { _id: { $in: ids } };
+  const data = req.body;
+  const session = res.locals.shopify.session;
 
-  await AccountModel.updateMany(condition, { selected: false }).exec();
-  res.send("delete");
+  try {
+    await AccountModel.findOneAndUpdate(
+      { _id: data?._id },
+      { selected: false }
+    );
+
+    if (!data.selected) {
+      const allData = await AccountModel.find({ selected: true }); // Fetch all selected data from the database
+
+      const metavalue = {
+        namespace: "whatsApp",
+        key: "Mobile",
+        value: JSON.stringify(allData),
+        type: "json",
+      };
+      const output = await addSelectedAccount(session, metavalue);
+      console.log(output);
+      if (output) {
+        res.status(200).send({ output });
+      } else {
+        res
+          .status(500)
+          .send({ output, error: true, message: "ADDING ISSUE IN META FIELD" });
+      }
+    }
+
+    const user = new AccountModel(data);
+    await user.save();
+    res.status(200).send({ message: "Data UnSelected Successfully" });
+  } catch (error) {
+    res.status(400).json(console.log("Error"));
+  }
 });
 
-//--------------------------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 app.get("/api/products/count", async (_req, res) => {
   const countData = await shopify.api.rest.Product.count({
     session: res.locals.shopify.session,

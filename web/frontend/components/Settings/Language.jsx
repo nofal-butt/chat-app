@@ -11,7 +11,16 @@ import { useState, useCallback } from "react";
 
 function Language() {
   const [open, setOpen] = useState(false);
-  const [customText, setCustomText] = useState("Start a Conversation");
+  const [data, setData] = useState({
+    widget_text: "Start a Conversation.",
+    widget_label_text: "Need Help? Chat with us.",
+    description: "Hi! Click one of our member below to chat on WhatsApp.",
+    sesponse_time_text: "The team typically replies in a few minutes.",
+    privacy_policy:
+      "Please accept our privacy policy first to start a conversation.",
+    transition: "",
+    message: "",
+  });
 
   const handleTabOpen = () => {
     setOpen(!open);
@@ -21,9 +30,12 @@ function Language() {
 
   const handleSelectChange = useCallback((value) => setSelected(value), []);
 
-  const handleCustomTextChange = (value) => {
-    setCustomText(value);
-  };
+  const handleChange = useCallback((value, name) => {
+    setData((predata) => ({
+      ...predata,
+      [name]: value,
+    }));
+  });
 
   const options = [{ label: "Translate for", value: "translate" }];
 
@@ -38,6 +50,7 @@ function Language() {
               ariaExpanded={open}
               ariaControls="basic-collapsible"
               pressed={open}
+              primary={!open}
             >
               {open ? "OFF" : "ON"}
             </Button>
@@ -63,6 +76,7 @@ function Language() {
               <FormLayout.Group>
                 <TextField
                   type="text"
+                  multiline={2}
                   value="Start a Conversation"
                   onChange={() => {}}
                   disabled
@@ -70,30 +84,35 @@ function Language() {
                 />
                 <TextField
                   type="text"
-                  name="conversation"
-                  value={customText}
-                  onChange={handleCustomTextChange}
+                  multiline={2}
+                  name="widget_text"
+                  value={data.widget_text}
+                  onChange={(value) => handleChange(value, "widget_text")}
                   autoComplete="off"
                 />
               </FormLayout.Group>
               <FormLayout.Group>
                 <TextField
                   type="text"
+                  multiline={2}
                   value="Hi! Click one of our members below to chat on WhatsApp"
-                  onChange={() => {}}
+                  onChange={(value) => handleChange(value, "StoreURL")}
                   disabled
                   autoComplete="off"
                 />
                 <TextField
                   type="text"
-                  name="members"
-                  onChange={() => {}}
+                  multiline={2}
+                  name="description"
+                  value={data.description}
+                  onChange={(value) => handleChange(value, "description")}
                   autoComplete="off"
                 />
               </FormLayout.Group>
               <FormLayout.Group>
                 <TextField
                   type="text"
+                  multiline={2}
                   value="The team typically replies in a few minutes."
                   onChange={() => {}}
                   disabled
@@ -101,14 +120,19 @@ function Language() {
                 />
                 <TextField
                   type="text"
-                  name="time"
-                  onChange={() => {}}
+                  multiline={2}
+                  name="sesponse_time_text"
+                  value={data.sesponse_time_text}
+                  onChange={(value) =>
+                    handleChange(value, "sesponse_time_text")
+                  }
                   autoComplete="off"
                 />
               </FormLayout.Group>
               <FormLayout.Group>
                 <TextField
                   type="text"
+                  multiline={2}
                   value="Need Help? Chat with us"
                   onChange={() => {}}
                   disabled
@@ -116,13 +140,16 @@ function Language() {
                 />
                 <TextField
                   type="text"
-                  name="help"
-                  onChange={() => {}}
+                  multiline={2}
+                  name="widget_label_text"
+                  value={data.widget_label_text}
+                  onChange={(value) => handleChange(value, "widget_label_text")}
                   autoComplete="off"
                 />
               </FormLayout.Group>
               <FormLayout.Group>
                 <TextField
+                  multiline={2}
                   type="text"
                   value="Please accept our privacy policy first to start a conversation."
                   onChange={() => {}}
@@ -130,25 +157,29 @@ function Language() {
                   autoComplete="off"
                 />
                 <TextField
+                  multiline={2}
                   type="text"
-                  name="privacy"
-                  onChange={() => {}}
+                  name="privacy_policy"
+                  value={data.privacy_policy}
+                  onChange={(value) => handleChange(value, "privacy_policy")}
                   autoComplete="off"
                 />
               </FormLayout.Group>
               <div>Button Translation</div>
               <FormLayout.Group>
                 <TextField
+                  multiline={2}
                   type="text"
-                  value="Need Help? Chat with us"
                   onChange={() => {}}
                   disabled
                   autoComplete="off"
                 />
                 <TextField
                   type="text"
-                  name="chat"
-                  onChange={() => {}}
+                  multiline={2}
+                  name="transition"
+                  value={data.transition}
+                  onChange={(value) => handleChange(value, "transition")}
                   autoComplete="off"
                 />
               </FormLayout.Group>
@@ -156,14 +187,17 @@ function Language() {
               <FormLayout.Group>
                 <TextField
                   type="text"
+                  multiline={2}
                   onChange={() => {}}
                   disabled
                   autoComplete="off"
                 />
                 <TextField
                   type="text"
-                  name="empty"
-                  onChange={() => {}}
+                  name="message"
+                  multiline={2}
+                  value={data.message}
+                  onChange={(value) => handleChange(value, "message")}
                   autoComplete="off"
                 />
               </FormLayout.Group>
